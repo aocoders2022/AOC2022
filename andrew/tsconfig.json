@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "noUncheckedIndexedAccess": true,
+        "paths": {
+            "@/*": ["./src/*"]
+        },
+        "strict": true,
+        "target": "esnext"
+    }
+}
