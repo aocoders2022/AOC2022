@@ -1,5 +1,5 @@
-export const countCalories = (inventory: number[]): number =>
-    inventory.reduce((count, calories) => count + calories)
+export const countCalories = ([calories = 0, ...inventory]: number[]): number =>
+    calories + (inventory.length && countCalories(inventory))
 
 export const sumTopNCalorieCounts = (
     inventories: number[][],
