@@ -9,7 +9,7 @@
     },
     "license": "MIT",
     "name": "advent-of-code-2022",
-    "repository": "git@github.com:andrewbrennanfr/advent-of-code-2022.git",
+    "repository": "git@github.com:aocoders2022/AOC2022.git",
     "scripts": {
         "test": "jest --runInBand --watch"
     },
