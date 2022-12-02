@@ -8,9 +8,7 @@ export const calculateTotalScore = (
     (rounds.length && calculateTotalScore(rounds, applyInstructions))
 
 export const followInstructions = ([abc, xyz]: Round): number =>
-    ({ X: 0, Y: 3, Z: 6 }[xyz] +
-    { AX: 3, AY: 1, AZ: 2, BX: 1, BY: 2, BZ: 3, CX: 2, CY: 3, CZ: 1 }[`${abc}${xyz}`])
+    ({ AX: 3, AY: 4, AZ: 8, BX: 1, BY: 5, BZ: 9, CX: 2, CY: 6, CZ: 7 }[`${abc}${xyz}`])
 
 export const guessInstructions = ([abc, xyz]: Round): number =>
-    ({ X: 1, Y: 2, Z: 3 }[xyz] +
-    { AX: 3, AY: 6, AZ: 0, BX: 0, BY: 3, BZ: 6, CX: 6, CY: 0, CZ: 3 }[`${abc}${xyz}`])
+    ({ AX: 4, AY: 8, AZ: 3, BX: 1, BY: 5, BZ: 9, CX: 7, CY: 2, CZ: 6 }[`${abc}${xyz}`])
