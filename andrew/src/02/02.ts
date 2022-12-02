@@ -9,9 +9,9 @@ export const calculateTotalScore = (
 
 export const followInstructions = ([abc, xyz]: Round): number =>
     ["X", "Y", "Z"].indexOf(xyz) * 3 +
-    { A: { X: 3, Y: 1, Z: 2 }, B: { X: 1, Y: 2, Z: 3 }, C: { X: 2, Y: 3, Z: 1 } }[abc][xyz]
+    { AX: 3, AY: 1, AZ: 2, BX: 1, BY: 2, BZ: 3, CX: 2, CY: 3, CZ: 1 }[`${abc}${xyz}`]
 
 export const guessInstructions = ([abc, xyz]: Round): number =>
     ["X", "Y", "Z"].indexOf(xyz) +
     1 +
-    { A: { X: 3, Y: 6, Z: 0 }, B: { X: 0, Y: 3, Z: 6 }, C: { X: 6, Y: 0, Z: 3 } }[abc][xyz]
+    { AX: 3, AY: 6, AZ: 0, BX: 0, BY: 3, BZ: 6, CX: 6, CY: 0, CZ: 3 }[`${abc}${xyz}`]
