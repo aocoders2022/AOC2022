@@ -21,7 +21,9 @@ describe("calculateScore", () => {
 describe("followInstructions", () => {
     it("should return the score after following the instructions", () => {
         expect(followInstructions("AY")).toEqual(4)
+
         expect(followInstructions("BX")).toEqual(1)
+
         expect(followInstructions("CZ")).toEqual(7)
     })
 })
@@ -29,7 +31,9 @@ describe("followInstructions", () => {
 describe("guessInstructions", () => {
     it("should return the score after guessing the instructions", () => {
         expect(guessInstructions("AY")).toEqual(8)
+
         expect(guessInstructions("BX")).toEqual(1)
+
         expect(guessInstructions("CZ")).toEqual(6)
     })
 })
