@@ -1,25 +1,25 @@
 import { readFileSync } from "fs"
 import { resolve } from "path"
-import { calculateTotalScore, followInstructions, guessInstructions, Round } from "@/02/02"
+import { calculateScore, followInstructions, guessInstructions, Round } from "@/02/02"
 
 const INPUT = String(readFileSync(resolve(__dirname, "02.input.txt")))
     .split("\n")
     .map((line) => line.split(" ") as Round)
 
-describe("calculateTotalScore", () => {
-    it("should return the total score", () => {
+describe("calculateScore", () => {
+    it("should return the final score after the given rounds", () => {
         expect(
-            calculateTotalScore([
+            calculateScore([
                 ["A", "Y"],
                 ["B", "X"],
                 ["C", "Z"],
             ])
         ).toEqual(15)
 
-        expect(calculateTotalScore(INPUT)).toEqual(15523)
+        expect(calculateScore(INPUT)).toEqual(15523)
 
         expect(
-            calculateTotalScore(
+            calculateScore(
                 [
                     ["A", "Y"],
                     ["B", "X"],
@@ -29,12 +29,12 @@ describe("calculateTotalScore", () => {
             )
         ).toEqual(12)
 
-        expect(calculateTotalScore(INPUT, followInstructions)).toEqual(15702)
+        expect(calculateScore(INPUT, followInstructions)).toEqual(15702)
     })
 })
 
 describe("followInstructions", () => {
-    it("should return the result of following the instructions", () => {
+    it("should return the score after following the instructions", () => {
         expect(followInstructions(["A", "Y"])).toEqual(4)
         expect(followInstructions(["B", "X"])).toEqual(1)
         expect(followInstructions(["C", "Z"])).toEqual(7)
@@ -42,7 +42,7 @@ describe("followInstructions", () => {
 })
 
 describe("guessInstructions", () => {
-    it("should return the result of guessing instructions", () => {
+    it("should return the score after guessing the instructions", () => {
         expect(guessInstructions(["A", "Y"])).toEqual(8)
         expect(guessInstructions(["B", "X"])).toEqual(1)
         expect(guessInstructions(["C", "Z"])).toEqual(6)
