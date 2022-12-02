@@ -1,9 +1,4 @@
-import { sum } from "@/tools"
+import { sort, sum } from "@/tools"
 
 export const sumTopNCalories = (inventories: number[][], n: number = 1): number =>
-    sum(
-        inventories
-            .map(sum)
-            .sort((caloriesA, caloriesB) => caloriesA - caloriesB)
-            .slice(-n)
-    )
+    sum(sort(inventories.map(sum)).slice(-n))
