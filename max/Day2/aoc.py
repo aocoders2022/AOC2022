@@ -43,5 +43,8 @@ cheat_score_matrix = {
 def part2():
     return sum([cheat_score_matrix[game] for game in input()])
 
+print('Part 1:')
 print(part1())
+print('\n')
+print('Part 2:')
 print(part2())

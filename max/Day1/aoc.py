@@ -8,5 +8,8 @@ def part1():
 def part2():
     return sum(sorted(calories())[-3:])
 
+print('Part 1:')
 print(part1())
+print('\n')
+print('Part 2:')
 print(part2())
