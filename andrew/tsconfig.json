@@ -4,7 +4,6 @@
         "paths": {
             "@/*": ["./src/*"]
         },
-        "strict": true,
-        "target": "esnext"
+        "strict": true
     }
 }
