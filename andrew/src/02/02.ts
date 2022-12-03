@@ -1,4 +1,4 @@
-import { __, map, pipe, propOr, sum } from "ramda"
+import { __, map, sum } from "ramda"
 
 export const calculateScore = (rounds: string[], instructions: Record<string, number>): number =>
-    sum(map(pipe(propOr(0, __, instructions), Number), rounds))
+    sum(map((round) => instructions[round] || 0, rounds))

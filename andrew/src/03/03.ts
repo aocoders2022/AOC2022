@@ -4,8 +4,8 @@ export const sumDuplicateItems = (lists: string[][]): number =>
     sum(
         map(
             pipe(
-                ([rucksack = "", ...rucksacks]) =>
-                    find((item) => all(includes(item), rucksacks), split("", rucksack)) || "",
+                (items) =>
+                    find((item) => all(includes(item), items), split("", items[0] || "")) || "",
                 (item) => item.charCodeAt(0) - (toUpper(item) === item ? 38 : 96)
             ),
             lists
