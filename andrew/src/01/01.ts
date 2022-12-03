@@ -1,4 +1,4 @@
-import { sort, sum } from "@/tools"
+import { map, slice, sort, subtract, sum } from "ramda"
 
 export const sumTopNCalories = (inventories: number[][], n: number = 1): number =>
-    sum(sort(inventories.map(sum)).slice(-n))
+    sum(slice(-n, Infinity, sort(subtract, map(sum, inventories))))

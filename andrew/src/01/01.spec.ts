@@ -1,10 +1,12 @@
 import { sumTopNCalories } from "@/01/01"
 import { readFileSync } from "fs"
 import { resolve } from "path"
+import { map, pipe, split } from "ramda"
 
-const INPUT = String(readFileSync(resolve(__dirname, "01.input.txt")))
-    .split("\n\n")
-    .map((block) => block.split("\n").map(Number))
+const INPUT = map(
+    pipe(split("\n"), map(Number)),
+    split("\n\n", String(readFileSync(resolve(__dirname, "01.input.txt"))))
+)
 
 describe("sumTopNCalories", () => {
     it("should return the sum of the top N calories", () => {

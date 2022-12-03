@@ -1,10 +1,12 @@
 import { calculateScore, followInstructions, guessInstructions } from "@/02/02"
 import { readFileSync } from "fs"
 import { resolve } from "path"
+import { map, replace, split } from "ramda"
 
-const INPUT = String(readFileSync(resolve(__dirname, "02.input.txt")))
-    .split("\n")
-    .map((line) => line.replace(" ", ""))
+const INPUT = map(
+    replace(" ", ""),
+    split("\n", String(readFileSync(resolve(__dirname, "02.input.txt"))))
+)
 
 describe("calculateScore", () => {
     it("should return the score after the given rounds", () => {
