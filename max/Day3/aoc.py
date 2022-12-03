@@ -18,7 +18,6 @@ def checkRumstack(rumstack):
   commonChars = pt1 & pt2
   return sum(charPower(char) for char in commonChars)
 
-# Checks the difference bet
 def part1():
   return sum(checkRumstack(rumstack) for rumstack in input())
 
@@ -26,7 +25,7 @@ def checkRumstackGroup(group):
   rumstacks = [set(rumstack) for rumstack in group]
   duplicatedChars = rumstacks[0] # at first we assume all the first rumstack content will be duplicated
   for rumstack in rumstacks[1:]:
-    duplicatedChars &= rumstack # &= is the IAND operator, it's equivalent to 
+    duplicatedChars &= rumstack # &= is the IAND operator, it's equivalent to duplicatedChars = duplicatedChars & rumstack
   
   return charPower(list(duplicatedChars)[0])
 
