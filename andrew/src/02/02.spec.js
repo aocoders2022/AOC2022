@@ -1,4 +1,4 @@
-import { calculateTotalScore, guessInstructions, followInstructions } from "@/02/02"
+import { calculateTotalScore, followInstructions, guessInstructions } from "@/02/02"
 import { readFileSync } from "fs"
 import { resolve } from "path"
 import { map, replace, split } from "ramda"

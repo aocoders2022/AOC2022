@@ -1,11 +1,11 @@
 import { sumTopNCalorieCounts } from "@/01/01"
 import { readFileSync } from "fs"
 import { resolve } from "path"
-import { map, pipe, split } from "ramda"
+import { isEmpty, map, split, splitWhenever } from "ramda"
 
 const INPUT = map(
-    pipe(split("\n"), map(Number)),
-    split("\n\n", String(readFileSync(resolve(__dirname, "01.input.txt"))))
+    map(Number),
+    splitWhenever(isEmpty, split("\n", String(readFileSync(resolve(__dirname, "01.input.txt")))))
 )
 
 describe("sumTopNCalorieCounts", () => {

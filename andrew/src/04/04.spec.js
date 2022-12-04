@@ -13,7 +13,7 @@ const INPUT = map(
 )
 
 describe("areRangesFullyOverlapping", () => {
-    it("should indicate whether the pair fully overlaps", () => {
+    it("should indicate whether the ranges fully overlaps", () => {
         expect(
             areRangesFullyOverlapping([
                 [2, 4],
@@ -59,7 +59,7 @@ describe("areRangesFullyOverlapping", () => {
 })
 
 describe("areRangesPartiallyOverlapping", () => {
-    it("should indicate whether the pair partially overlaps", () => {
+    it("should indicate whether the ranges partially overlaps", () => {
         expect(
             areRangesPartiallyOverlapping([
                 [2, 4],

@@ -11,5 +11,5 @@ export const separateRucksackGroups = (rucksacks) => splitEvery(3, rucksacks)
 
 export const sumCommonItemPriorities = (
     rucksacks,
-    splitRucksacks = map(separateRucksackCompartments)
-) => sum(map(pipe(findCommonItem, calculateItemPriority), splitRucksacks(rucksacks)))
+    separateRucksacks = map(separateRucksackCompartments)
+) => sum(map(pipe(findCommonItem, calculateItemPriority), separateRucksacks(rucksacks)))
