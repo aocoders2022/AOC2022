@@ -41,9 +41,6 @@ def part2():
   
   return badges
 
-
-  return 0
-
 print('Part 1:')
 print(part1())
 print('\n')
