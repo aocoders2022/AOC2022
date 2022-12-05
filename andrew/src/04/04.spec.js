@@ -5,10 +5,10 @@ import {
 } from "@/04/04"
 import { readFileSync } from "fs"
 import { resolve } from "path"
-import { map, pipe, split } from "ramda"
+import { map, pipe, replace, split, splitEvery } from "ramda"
 
 const INPUT = map(
-    pipe(split(","), map(pipe(split("-"), map(Number)))),
+    pipe(replace(/-/g, ","), split(","), map(Number), splitEvery(2)),
     split("\n", String(readFileSync(resolve(__dirname, "04.input.txt"))))
 )
 
