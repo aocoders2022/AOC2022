@@ -1,28 +1,10 @@
-import {
-    addIndex,
-    curry,
-    filter,
-    gt,
-    identity,
-    join,
-    lte,
-    map,
-    nth,
-    nthArg,
-    pipe,
-    reverse,
-} from "ramda"
+import { addIndex, curry, identity, join, map, nth, reverse, slice } from "ramda"
 
 const applyMove = ([count, from, to], stacks, transformation, stack, i) =>
     i === from - 1
-        ? addIndex(filter)(pipe(nthArg(1), lte(count)), stack)
+        ? slice(count, stack.length, stack)
         : i === to - 1
-        ? [
-              ...transformation(
-                  reverse(addIndex(filter)(pipe(nthArg(1), gt(count)), stacks[from - 1]))
-              ),
-              ...stack,
-          ]
+        ? [...transformation(reverse(slice(0, count, stacks[from - 1]))), ...stack]
         : stack
 
 export const crateMover9000 = ([count, from, to], stacks, transformation = identity) =>
