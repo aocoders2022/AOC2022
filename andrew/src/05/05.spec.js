@@ -22,33 +22,37 @@ import {
     trim,
 } from "ramda"
 
-const [STACKS, MOVES] = pipe(
-    split("\n\n"),
-    juxt([
-        pipe(
-            nth(0),
-            split("\n"),
-            slice(0, -1),
-            map(
-                pipe(
-                    replace(/\[|\]/g, " "),
-                    splitEvery(4),
-                    map(trim),
-                    addIndex(map)(applySpec({ index: nthArg(1), value: nthArg(0) })),
-                    reject(propSatisfies(isEmpty, "value"))
-                )
-            ),
-            flatten,
-            collectBy(prop("index")),
-            map(map(prop("value")))
+const parseStacks = (stacks) =>
+    pipe(
+        nth(0),
+        split("\n"),
+        slice(0, -1),
+        map(
+            pipe(
+                replace(/\[|\]/g, " "),
+                splitEvery(4),
+                map(trim),
+                addIndex(map)(applySpec({ index: nthArg(1), value: nthArg(0) })),
+                reject(propSatisfies(isEmpty, "value"))
+            )
         ),
-        pipe(
-            nth(1),
-            split("\n"),
-            map(pipe(split(/[move ]|[ from ]|[ to ]/g), reject(isEmpty), map(Number)))
-        ),
-    ])
-)(String(readFileSync(resolve(__dirname, "05.input.txt"))))
+        flatten,
+        collectBy(prop("index")),
+        map(map(prop("value")))
+    )(stacks)
+
+const parseMoves = (moves) =>
+    pipe(
+        nth(1),
+        split("\n"),
+        map(pipe(split(/[move ]|[ from ]|[ to ]/g), reject(isEmpty), map(Number)))
+    )(moves)
+
+/* -------------------------------------------------------------------------- */
+
+const [STACKS, MOVES] = juxt([parseStacks, parseMoves])(
+    split("\n\n", String(readFileSync(resolve(__dirname, "05.input.txt"))))
+)
 
 describe("crateMover9000", () => {
     it("should return the stacks after moving with the CrateMover 9000", () => {
