@@ -20,31 +20,29 @@ import {
     unnest,
 } from "ramda"
 
-const parseStacks = (stacks) =>
-    pipe(
-        nth(0),
-        split("\n"),
-        slice(0, -1),
-        map(
-            pipe(
-                replace(/\[|\]/g, " "),
-                splitEvery(4),
-                map(trim),
-                addIndex(map)(Array),
-                reject(propSatisfies(isEmpty, 0))
-            )
-        ),
-        unnest,
-        collectBy(prop(1)),
-        map(map(prop(0)))
-    )(stacks)
+const parseStacks = pipe(
+    nth(0),
+    split("\n"),
+    slice(0, -1),
+    map(
+        pipe(
+            replace(/\[|\]/g, " "),
+            splitEvery(4),
+            map(trim),
+            addIndex(map)(Array),
+            reject(propSatisfies(isEmpty, 0))
+        )
+    ),
+    unnest,
+    collectBy(prop(1)),
+    map(map(prop(0)))
+)
 
-const parseMoves = (moves) =>
-    pipe(
-        nth(1),
-        split("\n"),
-        map(pipe(split(/[move ]|[ from ]|[ to ]/g), reject(isEmpty), map(Number)))
-    )(moves)
+const parseMoves = pipe(
+    nth(1),
+    split("\n"),
+    map(pipe(split(/[move ]|[ from ]|[ to ]/g), reject(isEmpty), map(Number)))
+)
 
 /* -------------------------------------------------------------------------- */
 
