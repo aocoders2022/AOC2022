@@ -3,9 +3,7 @@ import { readFileSync } from "fs"
 import { resolve } from "path"
 import {
     addIndex,
-    applySpec,
     collectBy,
-    flatten,
     isEmpty,
     juxt,
     map,
@@ -20,6 +18,7 @@ import {
     split,
     splitEvery,
     trim,
+    unnest,
 } from "ramda"
 
 const parseStacks = (stacks) =>
@@ -32,13 +31,13 @@ const parseStacks = (stacks) =>
                 replace(/\[|\]/g, " "),
                 splitEvery(4),
                 map(trim),
-                addIndex(map)(applySpec({ index: nthArg(1), value: nthArg(0) })),
-                reject(propSatisfies(isEmpty, "value"))
+                addIndex(map)(juxt([nthArg(0), nthArg(1)])),
+                reject(propSatisfies(isEmpty, 0))
             )
         ),
-        flatten,
-        collectBy(prop("index")),
-        map(map(prop("value")))
+        unnest,
+        collectBy(prop(1)),
+        map(map(prop(0)))
     )(stacks)
 
 const parseMoves = (moves) =>
