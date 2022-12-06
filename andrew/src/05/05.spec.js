@@ -8,7 +8,6 @@ import {
     juxt,
     map,
     nth,
-    nthArg,
     pipe,
     prop,
     propSatisfies,
@@ -31,7 +30,7 @@ const parseStacks = (stacks) =>
                 replace(/\[|\]/g, " "),
                 splitEvery(4),
                 map(trim),
-                addIndex(map)(juxt([nthArg(0), nthArg(1)])),
+                addIndex(map)(Array),
                 reject(propSatisfies(isEmpty, 0))
             )
         ),
