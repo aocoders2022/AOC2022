@@ -1,16 +1,28 @@
-const isCommand = (line) => line[0] === "$"
-const isCd = (line) => isCommand(line) && line.slice(2, 4) == "cd"
-const getCd = (line) => line.slice(4).trim()
-const isCdUp = (line) => getCd(line) === ".."
-const isLs = (line) => isCommand(line) && line.slice(2, 4) == "ls"
-const getLs = (index, lines) => {
-    const withoutFirstLines = lines.slice(index + 1)
-    const nextCommand = withoutFirstLines.findIndex(isCommand)
-    const nextFiles = withoutFirstLines.slice(0, nextCommand)
+import {
+    drop,
+    dropLast,
+    equals,
+    filter,
+    find,
+    flatten,
+    gt,
+    lt,
+    map,
+    not,
+    pipe,
+    reduce,
+    slice,
+    sort,
+    subtract,
+    sum,
+    takeWhile,
+    trim,
+    type,
+    values,
+} from "ramda"
 
-    return nextFiles
-}
-
+// Mutatable... for now
+// Maybe we can do with assocPath??
 const populateTree = (tree, location, files) => {
     const clonedTree = JSON.parse(JSON.stringify(tree))
 
@@ -30,74 +42,63 @@ const populateTree = (tree, location, files) => {
     return clonedTree
 }
 
-const processLine = ([location, tree], line, i, lines) => {
-    if (!isCommand(line)) {
-        return [location, tree]
-    }
+/* -------------------------------------------------------------------------- */
 
-    if (isCd(line)) {
-        if (isCdUp(line)) {
-            return [location.slice(0, -1), tree]
-        }
+const isCommand = (line) => line[0] === "$"
+const getCommand = (line) => slice(2, 4, line)
 
-        return [[...location, getCd(line)], tree]
-    }
+const isCd = (line) => isCommand(line) && getCommand(line) == "cd"
+const isCdUp = (line) => isCd(line) && getCd(line) === ".."
+const getCd = (line) => trim(drop(4, line))
 
-    if (isLs(line)) {
-        return [location, populateTree(tree, location, getLs(i, lines))]
-    }
+const isLs = (line) => isCommand(line) && getCommand(line) == "ls"
+const getLs = (index, lines) =>
+    takeWhile(pipe(isCommand, not), drop(index + 1, lines))
 
-    return [location, tree]
-}
+const processLine = ([location, tree], line, i, lines) =>
+    !isCommand(line)
+        ? [location, tree]
+        : isCdUp(line)
+        ? [dropLast(1, location), tree]
+        : isCd(line)
+        ? [[...location, getCd(line)], tree]
+        : isLs(line)
+        ? [location, populateTree(tree, location, getLs(i, lines))]
+        : [location, tree]
 
 export const buildTree = (lines) =>
-    lines.slice(1).reduce(processLine, [[], {}])[1]
+    drop(1, lines).reduce(processLine, [[], {}])[1]
 
-export const getSize = (dir) => {
-    return Object.entries(dir).reduce((total, [name, value]) => {
-        if (typeof value === "string") {
-            return total + parseInt(value)
-        }
+export const getSize = (dir) =>
+    reduce(
+        (total, value) =>
+            total +
+            (typeof value === "string"
+                ? parseInt(value)
+                : typeof value === "object"
+                ? getSize(value)
+                : 0),
+        0,
+        values(dir)
+    )
 
-        if (typeof value === "object") {
-            return total + getSize(value)
-        }
+export const calculateAllDirSizes = (tree) =>
+    sort(
+        subtract,
+        flatten([
+            ...map(getSize, filter(pipe(type, equals("Object")), values(tree))),
+            ...map(
+                calculateAllDirSizes,
+                filter(pipe(type, equals("Object")), values(tree))
+            ),
+        ])
+    )
 
-        return total
-    }, 0)
-}
+export const findAtMost = (tree) =>
+    sum(filter(gt(100000), calculateAllDirSizes(tree)))
 
-export const calculateAllDirSizes = (tree) => {
-    const dirs = Object.entries(tree)
-        .filter(([, value]) => typeof value === "object")
-        .map(([, value]) => value)
+export const findSmallest = (tree, minSize) =>
+    find(lt(minSize), sort(subtract, calculateAllDirSizes(tree)))
 
-    if (!dirs.length) {
-        return []
-    }
-
-    return [...dirs.map(getSize), ...dirs.map(calculateAllDirSizes)]
-        .flat()
-        .sort((b, a) => b - a)
-}
-
-export const findAtMost = (tree) => {
-    const sizes = calculateAllDirSizes(tree)
-
-    return sizes.filter((size) => size < 100000).reduce((a, b) => a + b)
-}
-
-export const findSmallest = (tree, minSize) => {
-    const sizes = calculateAllDirSizes(tree).sort((b, a) => b - a)
-
-    // throw sizes.filter((size) => size >= minSize)
-
-    return sizes.find((size) => size >= minSize)
-}
-
-export const calculateSpaceToFree = (directory) => {
-    const totalSize = getSize(directory)
-    const freeSpace = 70000000 - totalSize
-
-    return 30000000 - freeSpace
-}
+export const calculateSpaceToFree = (directory) =>
+    30000000 - (70000000 - getSize(directory))

@@ -39,7 +39,7 @@ describe("getSize", () => {
                 j: "4060174",
                 "d.log": "8033020",
                 "d.ext": "5626152",
-                k: "7214296", // remember new line for this??
+                k: "7214296",
             })
         ).toEqual(24933642)
 
@@ -59,7 +59,7 @@ describe("getSize", () => {
                     j: "4060174",
                     "d.log": "8033020",
                     "d.ext": "5626152",
-                    k: "7214296", // remember new line for this??
+                    k: "7214296",
                 },
             })
         ).toEqual(48381165)
@@ -81,7 +81,7 @@ describe("getSize", () => {
                         j: "4060174",
                         "d.log": "8033020",
                         "d.ext": "5626152",
-                        k: "7214296", // remember new line for this??
+                        k: "7214296",
                     },
                 },
             })
@@ -151,7 +151,6 @@ describe("buildTree", () => {
                 "8033020 d.log",
                 "5626152 d.ext",
                 "7214296 k",
-                "",
             ])
         ).toEqual({
             a: {
@@ -168,7 +167,7 @@ describe("buildTree", () => {
                 j: "4060174",
                 "d.log": "8033020",
                 "d.ext": "5626152",
-                k: "7214296", // remember new line for this??
+                k: "7214296",
             },
         })
     })
