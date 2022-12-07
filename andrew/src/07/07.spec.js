@@ -1,4 +1,11 @@
-import { buildTree, getSize, findAtMost } from "@/07/07"
+import {
+    buildTree,
+    calculateAllDirSizes,
+    getSize,
+    findAtMost,
+    findSmallest,
+    calculateSpaceToFree,
+} from "@/07/07"
 import { readFileSync } from "fs"
 import { resolve } from "path"
 import { split } from "ramda"
@@ -56,6 +63,64 @@ describe("getSize", () => {
                 },
             })
         ).toEqual(48381165)
+
+        expect(
+            getSize({
+                "/": {
+                    a: {
+                        e: {
+                            i: "584",
+                        },
+                        f: "29116",
+                        g: "2557",
+                        "h.lst": "62596",
+                    },
+                    "b.txt": "14848514",
+                    "c.dat": "8504156",
+                    d: {
+                        j: "4060174",
+                        "d.log": "8033020",
+                        "d.ext": "5626152",
+                        k: "7214296", // remember new line for this??
+                    },
+                },
+            })
+        ).toEqual(48381165)
+
+        expect(getSize(buildTree(INPUT))).toEqual(42586708)
+
+        expect(
+            getSize({
+                "/": {
+                    ...buildTree(INPUT),
+                },
+            })
+        ).toEqual(42586708)
+    })
+})
+
+describe("calculateAllDirSizes", () => {
+    it("should return all sizes", () => {
+        expect(
+            calculateAllDirSizes({
+                a: {
+                    e: {
+                        i: "584",
+                    },
+                    f: "29116",
+                    g: "2557",
+                    "h.lst": "62596",
+                },
+                "b.txt": "14848514",
+                "c.dat": "8504156",
+                d: {
+                    j: "4060174",
+                    "d.log": "8033020",
+                    "d.ext": "5626152",
+                    k: "7214296",
+                },
+            })
+        ).toEqual([584, 94853, 24933642])
     })
 })
 
@@ -127,11 +192,90 @@ describe("findAtMost", () => {
                     j: "4060174",
                     "d.log": "8033020",
                     "d.ext": "5626152",
-                    k: "7214296", // remember new line for this??
+                    k: "7214296",
                 },
             })
         ).toEqual(95437)
 
-        expect(findAtMost(buildTree(INPUT))).toEqual(95437)
+        expect(findAtMost(buildTree(INPUT))).toEqual(1453349)
+    })
+})
+
+describe("findSmallest", () => {
+    it("should return the at smallest", () => {
+        expect(
+            findSmallest(
+                {
+                    a: {
+                        e: {
+                            i: "584",
+                        },
+                        f: "29116",
+                        g: "2557",
+                        "h.lst": "62596",
+                    },
+                    "b.txt": "14848514",
+                    "c.dat": "8504156",
+                    d: {
+                        j: "4060174",
+                        "d.log": "8033020",
+                        "d.ext": "5626152",
+                        k: "7214296",
+                    },
+                },
+                calculateSpaceToFree({
+                    a: {
+                        e: {
+                            i: "584",
+                        },
+                        f: "29116",
+                        g: "2557",
+                        "h.lst": "62596",
+                    },
+                    "b.txt": "14848514",
+                    "c.dat": "8504156",
+                    d: {
+                        j: "4060174",
+                        "d.log": "8033020",
+                        "d.ext": "5626152",
+                        k: "7214296",
+                    },
+                })
+            )
+        ).toEqual(24933642)
+
+        expect(
+            findSmallest(
+                buildTree(INPUT),
+                calculateSpaceToFree(buildTree(INPUT))
+            )
+        ).toEqual(2948823)
+    })
+})
+
+describe("calculateSpaceToFree", () => {
+    it("should return the required free space", () => {
+        expect(
+            calculateSpaceToFree({
+                a: {
+                    e: {
+                        i: "584",
+                    },
+                    f: "29116",
+                    g: "2557",
+                    "h.lst": "62596",
+                },
+                "b.txt": "14848514",
+                "c.dat": "8504156",
+                d: {
+                    j: "4060174",
+                    "d.log": "8033020",
+                    "d.ext": "5626152",
+                    k: "7214296",
+                },
+            })
+        ).toEqual(8381165)
+
+        expect(calculateSpaceToFree(buildTree(INPUT))).toEqual(2586708)
     })
 })

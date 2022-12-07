@@ -67,7 +67,7 @@ export const getSize = (dir) => {
     }, 0)
 }
 
-const calculateAllDirSizes = (tree) => {
+export const calculateAllDirSizes = (tree) => {
     const dirs = Object.entries(tree)
         .filter(([, value]) => typeof value === "object")
         .map(([, value]) => value)
@@ -76,11 +76,28 @@ const calculateAllDirSizes = (tree) => {
         return []
     }
 
-    return [...dirs.map(getSize), ...dirs.map(calculateAllDirSizes)].flat()
+    return [...dirs.map(getSize), ...dirs.map(calculateAllDirSizes)]
+        .flat()
+        .sort((b, a) => b - a)
 }
 
 export const findAtMost = (tree) => {
     const sizes = calculateAllDirSizes(tree)
 
     return sizes.filter((size) => size < 100000).reduce((a, b) => a + b)
+}
+
+export const findSmallest = (tree, minSize) => {
+    const sizes = calculateAllDirSizes(tree).sort((b, a) => b - a)
+
+    // throw sizes.filter((size) => size >= minSize)
+
+    return sizes.find((size) => size >= minSize)
+}
+
+export const calculateSpaceToFree = (directory) => {
+    const totalSize = getSize(directory)
+    const freeSpace = 70000000 - totalSize
+
+    return 30000000 - freeSpace
 }
