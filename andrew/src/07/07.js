@@ -1,10 +1,12 @@
 import {
+    assocPath,
     drop,
     dropLast,
     equals,
     filter,
     find,
     flatten,
+    fromPairs,
     gt,
     lt,
     map,
@@ -13,36 +15,28 @@ import {
     reduce,
     slice,
     sort,
+    split,
     subtract,
     sum,
+    take,
+    takeLastWhile,
     takeWhile,
     trim,
     type,
     values,
 } from "ramda"
 
-// Mutatable... for now
-// Maybe we can do with assocPath??
-const populateTree = (tree, location, files) => {
-    const clonedTree = JSON.parse(JSON.stringify(tree))
+const fileToEntry = (file) =>
+    take(3, file) === "dir"
+        ? [split(" ", file)[1], {}]
+        : [split(" ", file)[1], split(" ", file)[0]]
 
-    const child = location.reduce(
-        (newTree, nextChunk) => newTree[nextChunk],
-        clonedTree
-    )
+const populateEntries = (files) => fromPairs(map(fileToEntry, files))
 
-    files.forEach((file) => {
-        if (file.slice(0, 3) === "dir") {
-            child[file.split(" ")[1]] = {}
-        } else {
-            child[file.split(" ")[1]] = file.split(" ")[0]
-        }
-    })
-
-    return clonedTree
-}
-
-/* -------------------------------------------------------------------------- */
+const populateTree = (tree, location, files) =>
+    location.length
+        ? assocPath(location, populateEntries(files), tree)
+        : populateEntries(files)
 
 const isCommand = (line) => line[0] === "$"
 const getCommand = (line) => slice(2, 4, line)
@@ -69,18 +63,15 @@ const processLine = ([location, tree], line, i, lines) =>
 export const buildTree = (lines) =>
     drop(1, lines).reduce(processLine, [[], {}])[1]
 
-export const getSize = (dir) =>
-    reduce(
-        (total, value) =>
-            total +
-            (typeof value === "string"
-                ? parseInt(value)
-                : typeof value === "object"
-                ? getSize(value)
-                : 0),
-        0,
-        values(dir)
-    )
+const reduceSize = (total, value) =>
+    total +
+    (typeof value === "string"
+        ? parseInt(value)
+        : typeof value === "object"
+        ? getSize(value)
+        : 0)
+
+export const getSize = (dir) => reduce(reduceSize, 0, values(dir))
 
 export const calculateAllDirSizes = (tree) =>
     sort(
