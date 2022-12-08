@@ -4,10 +4,13 @@ const getCell = ([r, c], grid) => (getRow([r], grid) ? grid[r][c] : 0)
 const getCol = ([, c], grid) => grid.map((row) => row.find((_, i) => i === c))
 const getRow = ([r], grid) => grid[r]
 
-const getColBottom = ([r, c], grid) => getCol([r, c], grid).slice(r + 1)
-const getColTop = ([r, c], grid) => getCol([r, c], grid).slice(0, r)
-const getRowLeft = ([r, c], grid) => getRow([r], grid).slice(0, c)
-const getRowRight = ([r, c], grid) => getRow([r], grid).slice(c + 1)
+const getBefore = (i, trees) => trees.slice(0, i)
+const getAfter = (i, trees) => trees.slice(i + 1)
+
+const getColBottom = ([r, c], grid) => getAfter(r, getCol([r, c], grid))
+const getColTop = ([r, c], grid) => getBefore(r, getCol([r, c], grid))
+const getRowLeft = ([r, c], grid) => getBefore(c, getRow([r], grid))
+const getRowRight = ([r, c], grid) => getAfter(c, getRow([r], grid))
 
 const isTreeLower = ([r, c], grid, cell) => cell < getCell([r, c], grid)
 
