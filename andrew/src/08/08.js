@@ -1,65 +1,54 @@
 import { takeLastWhile, takeWhile } from "ramda"
 
-const getSquare = ([r, c], grid) => (grid[r] ? grid[r][c] : 0)
+const getCell = ([r, c], grid) => (getRow([r], grid) ? grid[r][c] : 0)
+const getCol = ([, c], grid) => grid.map((row) => row.find((_, i) => i === c))
+const getRow = ([r], grid) => grid[r]
 
-const isVisibleFromEdge = ([r, c], grid) => {
-    const rowLeft = grid[r].slice(0, c)
-    const rowRight = grid[r].slice(c + 1)
+const getColBottom = ([r, c], grid) => getCol([r, c], grid).slice(r + 1)
+const getColTop = ([r, c], grid) => getCol([r, c], grid).slice(0, r)
+const getRowLeft = ([r, c], grid) => getRow([r], grid).slice(0, c)
+const getRowRight = ([r, c], grid) => getRow([r], grid).slice(c + 1)
 
-    const col = grid.map((row) => row.find((_, i) => i === c))
-    const colTop = col.slice(0, r)
-    const colBottom = col.slice(r + 1)
+const isTreeLower = ([r, c], grid, cell) => cell < getCell([r, c], grid)
 
-    return (
-        rowLeft.every((cell) => cell < getSquare([r, c], grid)) ||
-        rowRight.every((cell) => cell < getSquare([r, c], grid)) ||
-        colTop.every((cell) => cell < getSquare([r, c], grid)) ||
-        colBottom.every((cell) => cell < getSquare([r, c], grid))
-    )
-}
+const isVisibleFromEdge = ([r, c], grid) =>
+    getRowLeft([r, c], grid).every(isTreeLower.bind(null, [r, c], grid)) ||
+    getRowRight([r, c], grid).every(isTreeLower.bind(null, [r, c], grid)) ||
+    getColTop([r, c], grid).every(isTreeLower.bind(null, [r, c], grid)) ||
+    getColBottom([r, c], grid).every(isTreeLower.bind(null, [r, c], grid))
 
-const isVisible = ([r, c], grid) => {
-    const row = grid[r]
-    const col = grid.map((row) => row.find((_, i) => i === c))
+const isVisible = ([r, c], grid) =>
+    isVisibleFromEdge([r, c], grid) ||
+    r === 0 ||
+    c === 0 ||
+    r === getRow([r, c], grid).length - 1 ||
+    c === getCol([r, c], grid).length - 1
 
-    return (
-        isVisibleFromEdge([r, c], grid) ||
-        r === 0 ||
-        c === 0 ||
-        r === col.length - 1 ||
-        c === row.length - 1
-    )
-}
+const getViewDistance = (trees, viewable) =>
+    viewable.length === trees.length ? viewable.length : viewable.length + 1
 
 export const countVisibleTrees = (trees) => trees.length
 
 export const getVisibleTrees = (grid) =>
     grid.map((row, r) => row.filter((__, c) => isVisible([r, c], grid))).flat()
 
-export const calculateScenicScore = ([r, c], grid) => {
-    const square = getSquare([r, c], grid)
-
-    const rowLeft = grid[r].slice(0, c)
-    const rowRight = grid[r].slice(c + 1)
-
-    const col = grid.map((row) => row.find((_, i) => i === c))
-    const colTop = col.slice(0, r)
-    const colBottom = col.slice(r + 1)
-
-    const seeRight = takeWhile((cell) => cell < square, rowRight)
-    const seeBottom = takeWhile((cell) => cell < square, colBottom)
-    const seeTop = takeLastWhile((cell) => cell < square, colTop)
-    const seeLeft = takeLastWhile((cell) => cell < square, rowLeft)
-
-    const totalSeeRight =
-        seeRight.length === rowRight.length ? seeRight.length : seeRight.length + 1
-    const totalSeeBottom =
-        seeBottom.length === colBottom.length ? seeBottom.length : seeBottom.length + 1
-    const totalSeeTop = seeTop.length === colTop.length ? seeTop.length : seeTop.length + 1
-    const totalSeeLeft = seeLeft.length === rowLeft.length ? seeLeft.length : seeLeft.length + 1
-
-    return totalSeeRight * totalSeeBottom * totalSeeTop * totalSeeLeft
-}
+export const calculateScenicScore = ([r, c], grid) =>
+    getViewDistance(
+        getRowRight([r, c], grid),
+        takeWhile(isTreeLower.bind(null, [r, c], grid), getRowRight([r, c], grid))
+    ) *
+    getViewDistance(
+        getColBottom([r, c], grid),
+        takeWhile(isTreeLower.bind(null, [r, c], grid), getColBottom([r, c], grid))
+    ) *
+    getViewDistance(
+        getColTop([r, c], grid),
+        takeLastWhile(isTreeLower.bind(null, [r, c], grid), getColTop([r, c], grid))
+    ) *
+    getViewDistance(
+        getRowLeft([r, c], grid),
+        takeLastWhile(isTreeLower.bind(null, [r, c], grid), getRowLeft([r, c], grid))
+    )
 
 export const findHighestScenicScore = (grid) =>
     Math.max(...grid.map((row, r) => row.map((__, c) => calculateScenicScore([r, c], grid))).flat())
