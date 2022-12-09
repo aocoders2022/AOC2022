@@ -32,57 +32,57 @@ describe("performMotion", () => {
     it("should return the new position after performing the motion", () => {
         expect(
             performMotion(
-                { headX: 0, headY: 0, tailX: 0, tailY: 0 },
-                { direction: "R", distance: 4 }
+                { direction: "R", distance: 4 },
+                { headX: 0, headY: 0, tailX: 0, tailY: 0 }
             )
         ).toEqual({ headX: 4, headY: 0, tailX: 3, tailY: 0 })
 
         expect(
             performMotion(
-                { headX: 4, headY: 0, tailX: 3, tailY: 0 },
-                { direction: "U", distance: 4 }
+                { direction: "U", distance: 4 },
+                { headX: 4, headY: 0, tailX: 3, tailY: 0 }
             )
         ).toEqual({ headX: 4, headY: 4, tailX: 4, tailY: 3 })
 
         expect(
             performMotion(
-                { headX: 4, headY: 4, tailX: 4, tailY: 3 },
-                { direction: "L", distance: 3 }
+                { direction: "L", distance: 3 },
+                { headX: 4, headY: 4, tailX: 4, tailY: 3 }
             )
         ).toEqual({ headX: 1, headY: 4, tailX: 2, tailY: 4 })
 
         expect(
             performMotion(
-                { headX: 1, headY: 4, tailX: 2, tailY: 4 },
-                { direction: "D", distance: 1 }
+                { direction: "D", distance: 1 },
+                { headX: 1, headY: 4, tailX: 2, tailY: 4 }
             )
         ).toEqual({ headX: 1, headY: 3, tailX: 2, tailY: 4 })
 
         expect(
             performMotion(
-                { headX: 1, headY: 3, tailX: 2, tailY: 4 },
-                { direction: "R", distance: 4 }
+                { direction: "R", distance: 4 },
+                { headX: 1, headY: 3, tailX: 2, tailY: 4 }
             )
         ).toEqual({ headX: 5, headY: 3, tailX: 4, tailY: 3 })
 
         expect(
             performMotion(
-                { headX: 5, headY: 3, tailX: 4, tailY: 3 },
-                { direction: "D", distance: 1 }
+                { direction: "D", distance: 1 },
+                { headX: 5, headY: 3, tailX: 4, tailY: 3 }
             )
         ).toEqual({ headX: 5, headY: 2, tailX: 4, tailY: 3 })
 
         expect(
             performMotion(
-                { headX: 5, headY: 2, tailX: 4, tailY: 3 },
-                { direction: "L", distance: 5 }
+                { direction: "L", distance: 5 },
+                { headX: 5, headY: 2, tailX: 4, tailY: 3 }
             )
         ).toEqual({ headX: 0, headY: 2, tailX: 1, tailY: 2 })
 
         expect(
             performMotion(
-                { headX: 0, headY: 2, tailX: 1, tailY: 2 },
-                { direction: "R", distance: 2 }
+                { direction: "R", distance: 2 },
+                { headX: 0, headY: 2, tailX: 1, tailY: 2 }
             )
         ).toEqual({ headX: 2, headY: 2, tailX: 1, tailY: 2 })
     })
