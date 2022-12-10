@@ -1,4 +1,10 @@
-import { completeCycle, completeProgram, findSignalStrength, sumSignalStrengths } from "@/10/10"
+import {
+    completeCycle,
+    completeProgram,
+    findSignalStrength,
+    renderCRT,
+    sumSignalStrengths,
+} from "@/10/10"
 import { readFileSync } from "fs"
 import { resolve } from "path"
 
@@ -59,6 +65,26 @@ describe("findSignalStrength", () => {
         expect(findSignalStrength(EXAMPLE, [1, { x: 1 }], 180)).toEqual(2880)
 
         expect(findSignalStrength(EXAMPLE, [1, { x: 1 }], 220)).toEqual(3960)
+    })
+})
+
+describe("renderCRT", () => {
+    it("should render the CRT screen", () => {
+        expect(renderCRT(EXAMPLE, [1, { x: 1 }])).toEqual(`
+##..##..##..##..##..##..##..##..##..##..
+###...###...###...###...###...###...###.
+####....####....####....####....####....
+#####.....#####.....#####.....#####.....
+######......######......######......####
+#######.......#######.......#######.....`)
+
+        expect(renderCRT(INPUT, [1, { x: 1 }])).toEqual(`
+###..####.####.####.#..#.###..####..##..
+#..#.#.......#.#....#.#..#..#.#....#..#.
+#..#.###....#..###..##...###..###..#..#.
+###..#.....#...#....#.#..#..#.#....####.
+#.#..#....#....#....#.#..#..#.#....#..#.
+#..#.#....####.####.#..#.###..#....#..#.`)
     })
 })
 
