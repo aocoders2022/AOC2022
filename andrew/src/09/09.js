@@ -1,26 +1,3 @@
-export const performMotion = ({ direction, distance }, rope) =>
-    Array(distance).fill(null).reduce(performPartialMotion.bind(null, { direction }), rope)
-
-export const performPartialMotion = ({ direction }, [head, tail]) => {
-    const isTooFar = (head, tail) => Math.abs(head.x - tail.x) > 1 || Math.abs(head.y - tail.y) > 1
-
-    if (direction === "R" || direction === "L") {
-        const newHead = { x: head.x + (direction === "R" ? 1 : -1), y: head.y }
-
-        return isTooFar(newHead, tail)
-            ? [newHead, { x: newHead.x + (direction === "R" ? -1 : 1), y: head.y }]
-            : [newHead, tail]
-    }
-
-    if (direction === "U" || direction === "D") {
-        const newHead = { x: head.x, y: head.y + (direction === "U" ? 1 : -1) }
-
-        return isTooFar(newHead, tail)
-            ? [newHead, { x: head.x, y: newHead.y + (direction === "U" ? -1 : 1) }]
-            : [newHead, tail]
-    }
-}
-
 export const countVisitedSquares = (motions, rope) =>
     Array.from(
         new Set(
@@ -38,3 +15,25 @@ export const countVisitedSquares = (motions, rope) =>
                 .map(([{ x, y }]) => `${x}_${y}`)
         )
     ).length
+
+export const performMotion = ({ direction, distance }, rope) =>
+    Array(distance).fill(null).reduce(performPartialMotion.bind(null, { direction }), rope)
+
+export const performPartialMotion = ({ direction }, rope) =>
+    rope.reduce(
+        (movedRope, { x, y }, i) => [
+            ...movedRope,
+            !i
+                ? {
+                      x: x + (direction === "R" ? 1 : direction === "L" ? -1 : 0),
+                      y: y + (direction === "U" ? 1 : direction === "D" ? -1 : 0),
+                  }
+                : Math.abs(movedRope[i - 1].x - x) > 1 || Math.abs(movedRope[i - 1].y - y) > 1
+                ? {
+                      x: x + (movedRope[i - 1].x > x ? 1 : movedRope[i - 1].x < x ? -1 : 0),
+                      y: y + (movedRope[i - 1].y > y ? 1 : movedRope[i - 1].y < y ? -1 : 0),
+                  }
+                : { x, y },
+        ],
+        []
+    )
