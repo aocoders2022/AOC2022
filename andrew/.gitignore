@@ -1,2 +1,3 @@
+src/**/*.example.txt
 src/**/*.input.txt
 node_modules/
