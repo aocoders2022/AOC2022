@@ -4,8 +4,8 @@ export const completeCycle = ([cycle, { x }], { action, value }) =>
 export const completeProgram = (instructions, [cycle, { x }]) =>
     instructions.reduce(completeCycle, [cycle, { x }])
 
-export const findSignalStrength = (at, instructions, [cycle, { x }]) => {
-    const [, value] = instructions.reduce(
+export const findSignalStrength = (instructions, [cycle, { x }], at) =>
+    instructions.reduce(
         (current, { action, value }) => {
             if (current[0] === at) {
                 return current
@@ -20,10 +20,7 @@ export const findSignalStrength = (at, instructions, [cycle, { x }]) => {
             return nextCurrent
         },
         [cycle, { x }]
-    )
+    )[1].x * at
 
-    return value.x * at
-}
-
-export const sumSignalStrengths = (ats, instructions, [cycle, { x }]) =>
-    ats.map((at) => findSignalStrength(at, instructions, [cycle, { x }])).reduce((a, b) => a + b)
+export const sumSignalStrengths = (instructions, [cycle, { x }], ats) =>
+    ats.map(findSignalStrength.bind(null, instructions, [cycle, { x }])).reduce((a, b) => a + b)

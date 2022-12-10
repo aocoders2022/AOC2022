@@ -48,27 +48,27 @@ describe("completeProgram", () => {
 
 describe("findSignalStrength", () => {
     it("should return the signal strength", () => {
-        expect(findSignalStrength(20, EXAMPLE, [1, { x: 1 }])).toEqual(420)
+        expect(findSignalStrength(EXAMPLE, [1, { x: 1 }], 20)).toEqual(420)
 
-        expect(findSignalStrength(60, EXAMPLE, [1, { x: 1 }])).toEqual(1140)
+        expect(findSignalStrength(EXAMPLE, [1, { x: 1 }], 60)).toEqual(1140)
 
-        expect(findSignalStrength(100, EXAMPLE, [1, { x: 1 }])).toEqual(1800)
+        expect(findSignalStrength(EXAMPLE, [1, { x: 1 }], 100)).toEqual(1800)
 
-        expect(findSignalStrength(140, EXAMPLE, [1, { x: 1 }])).toEqual(2940)
+        expect(findSignalStrength(EXAMPLE, [1, { x: 1 }], 140)).toEqual(2940)
 
-        expect(findSignalStrength(180, EXAMPLE, [1, { x: 1 }])).toEqual(2880)
+        expect(findSignalStrength(EXAMPLE, [1, { x: 1 }], 180)).toEqual(2880)
 
-        expect(findSignalStrength(220, EXAMPLE, [1, { x: 1 }])).toEqual(3960)
+        expect(findSignalStrength(EXAMPLE, [1, { x: 1 }], 220)).toEqual(3960)
     })
 })
 
 describe("sumSignalStrengths", () => {
     it("should return the sum of the signal strength", () => {
-        expect(sumSignalStrengths([20, 60, 100, 140, 180, 220], EXAMPLE, [1, { x: 1 }])).toEqual(
+        expect(sumSignalStrengths(EXAMPLE, [1, { x: 1 }], [20, 60, 100, 140, 180, 220])).toEqual(
             13140
         )
 
-        expect(sumSignalStrengths([20, 60, 100, 140, 180, 220], INPUT, [1, { x: 1 }])).toEqual(
+        expect(sumSignalStrengths(INPUT, [1, { x: 1 }], [20, 60, 100, 140, 180, 220])).toEqual(
             15220
         )
     })
