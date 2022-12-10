@@ -1,12 +1,11 @@
 import { countVisitedSquares, performMotion } from "@/09/09"
 import { readFileSync } from "fs"
 import { resolve } from "path"
-import { applySpec, map, nth, pipe, split } from "ramda"
 
-const INPUT = map(
-    pipe(split(" "), applySpec({ direction: nth(0), distance: pipe(nth(1), Number) })),
-    split("\n", String(readFileSync(resolve(__dirname, "09.input.txt"))))
-)
+const INPUT = String(readFileSync(resolve(__dirname, "09.input.txt")))
+    .split("\n")
+    .map((line) => line.split(" "))
+    .map(([direction, distance]) => ({ direction, distance: Number(distance) }))
 
 describe("countVisitedSquares", () => {
     expect(
@@ -21,69 +20,101 @@ describe("countVisitedSquares", () => {
                 { direction: "L", distance: 5 },
                 { direction: "R", distance: 2 },
             ],
-            { headX: 0, headY: 0, tailX: 0, tailY: 0 }
+            [
+                { x: 0, y: 0 },
+                { x: 0, y: 0 },
+            ]
         )
     ).toEqual(13)
 
-    expect(countVisitedSquares(INPUT, { headX: 0, headY: 0, tailX: 0, tailY: 0 })).toEqual(5874)
+    expect(
+        countVisitedSquares(INPUT, [
+            { x: 0, y: 0 },
+            { x: 0, y: 0 },
+        ])
+    ).toEqual(5874)
 })
 
 describe("performMotion", () => {
-    it("should return the new position after performing the motion", () => {
+    it("should return the new rope after performing the motion", () => {
         expect(
-            performMotion(
-                { direction: "R", distance: 4 },
-                { headX: 0, headY: 0, tailX: 0, tailY: 0 }
-            )
-        ).toEqual({ headX: 4, headY: 0, tailX: 3, tailY: 0 })
+            performMotion({ direction: "R", distance: 4 }, [
+                { x: 0, y: 0 },
+                { x: 0, y: 0 },
+            ])
+        ).toEqual([
+            { x: 4, y: 0 },
+            { x: 3, y: 0 },
+        ])
 
         expect(
-            performMotion(
-                { direction: "U", distance: 4 },
-                { headX: 4, headY: 0, tailX: 3, tailY: 0 }
-            )
-        ).toEqual({ headX: 4, headY: 4, tailX: 4, tailY: 3 })
+            performMotion({ direction: "U", distance: 4 }, [
+                { x: 4, y: 0 },
+                { x: 3, y: 0 },
+            ])
+        ).toEqual([
+            { x: 4, y: 4 },
+            { x: 4, y: 3 },
+        ])
 
         expect(
-            performMotion(
-                { direction: "L", distance: 3 },
-                { headX: 4, headY: 4, tailX: 4, tailY: 3 }
-            )
-        ).toEqual({ headX: 1, headY: 4, tailX: 2, tailY: 4 })
+            performMotion({ direction: "L", distance: 3 }, [
+                { x: 4, y: 4 },
+                { x: 4, y: 3 },
+            ])
+        ).toEqual([
+            { x: 1, y: 4 },
+            { x: 2, y: 4 },
+        ])
 
         expect(
-            performMotion(
-                { direction: "D", distance: 1 },
-                { headX: 1, headY: 4, tailX: 2, tailY: 4 }
-            )
-        ).toEqual({ headX: 1, headY: 3, tailX: 2, tailY: 4 })
+            performMotion({ direction: "D", distance: 1 }, [
+                { x: 1, y: 4 },
+                { x: 2, y: 4 },
+            ])
+        ).toEqual([
+            { x: 1, y: 3 },
+            { x: 2, y: 4 },
+        ])
 
         expect(
-            performMotion(
-                { direction: "R", distance: 4 },
-                { headX: 1, headY: 3, tailX: 2, tailY: 4 }
-            )
-        ).toEqual({ headX: 5, headY: 3, tailX: 4, tailY: 3 })
+            performMotion({ direction: "R", distance: 4 }, [
+                { x: 1, y: 3 },
+                { x: 2, y: 4 },
+            ])
+        ).toEqual([
+            { x: 5, y: 3 },
+            { x: 4, y: 3 },
+        ])
 
         expect(
-            performMotion(
-                { direction: "D", distance: 1 },
-                { headX: 5, headY: 3, tailX: 4, tailY: 3 }
-            )
-        ).toEqual({ headX: 5, headY: 2, tailX: 4, tailY: 3 })
+            performMotion({ direction: "D", distance: 1 }, [
+                { x: 5, y: 3 },
+                { x: 4, y: 3 },
+            ])
+        ).toEqual([
+            { x: 5, y: 2 },
+            { x: 4, y: 3 },
+        ])
 
         expect(
-            performMotion(
-                { direction: "L", distance: 5 },
-                { headX: 5, headY: 2, tailX: 4, tailY: 3 }
-            )
-        ).toEqual({ headX: 0, headY: 2, tailX: 1, tailY: 2 })
+            performMotion({ direction: "L", distance: 5 }, [
+                { x: 5, y: 2 },
+                { x: 4, y: 3 },
+            ])
+        ).toEqual([
+            { x: 0, y: 2 },
+            { x: 1, y: 2 },
+        ])
 
         expect(
-            performMotion(
-                { direction: "R", distance: 2 },
-                { headX: 0, headY: 2, tailX: 1, tailY: 2 }
-            )
-        ).toEqual({ headX: 2, headY: 2, tailX: 1, tailY: 2 })
+            performMotion({ direction: "R", distance: 2 }, [
+                { x: 0, y: 2 },
+                { x: 1, y: 2 },
+            ])
+        ).toEqual([
+            { x: 2, y: 2 },
+            { x: 1, y: 2 },
+        ])
     })
 })

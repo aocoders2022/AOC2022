@@ -1,42 +1,40 @@
-const isTooFar = ({ headX, headY }, { tailX, tailY }) =>
-    Math.abs(headX - tailX) > 1 || Math.abs(headY - tailY) > 1
+export const performMotion = ({ direction, distance }, rope) =>
+    Array(distance).fill(null).reduce(performPartialMotion.bind(null, { direction }), rope)
 
-const performPartialMotion = ({ direction }, { headX, headY, tailX, tailY }) => {
+export const performPartialMotion = ({ direction }, [head, tail]) => {
+    const isTooFar = (head, tail) => Math.abs(head.x - tail.x) > 1 || Math.abs(head.y - tail.y) > 1
+
     if (direction === "R" || direction === "L") {
-        const newHead = { headX: headX + (direction === "R" ? 1 : -1), headY }
+        const newHead = { x: head.x + (direction === "R" ? 1 : -1), y: head.y }
 
-        return isTooFar(newHead, { tailX, tailY })
-            ? { ...newHead, tailX: newHead.headX + (direction === "R" ? -1 : 1), tailY: headY }
-            : { ...newHead, tailX, tailY }
+        return isTooFar(newHead, tail)
+            ? [newHead, { x: newHead.x + (direction === "R" ? -1 : 1), y: head.y }]
+            : [newHead, tail]
     }
 
     if (direction === "U" || direction === "D") {
-        const newHead = { headX, headY: headY + (direction === "U" ? 1 : -1) }
+        const newHead = { x: head.x, y: head.y + (direction === "U" ? 1 : -1) }
 
-        return isTooFar(newHead, { tailX, tailY })
-            ? { ...newHead, tailX: headX, tailY: newHead.headY + (direction === "U" ? -1 : 1) }
-            : { ...newHead, tailX, tailY }
+        return isTooFar(newHead, tail)
+            ? [newHead, { x: head.x, y: newHead.y + (direction === "U" ? -1 : 1) }]
+            : [newHead, tail]
     }
-
-    return { headX, headY, tailX, tailY }
 }
 
-export const performMotion = ({ direction, distance }, position) =>
-    Array(distance).fill(null).reduce(performPartialMotion.bind(null, { direction }), position)
-
-export const countVisitedSquares = (motions, position) =>
+export const countVisitedSquares = (motions, rope) =>
     Array.from(
         new Set(
             motions
                 .map(({ direction, distance }) => Array(distance).fill({ direction, distance: 1 }))
                 .flat()
                 .reduce(
-                    (positions, motion) => [
-                        ...positions,
-                        performPartialMotion(motion, positions[positions.length - 1]),
+                    (ropes, motion) => [
+                        ...ropes,
+                        performPartialMotion(motion, ropes[ropes.length - 1]),
                     ],
-                    [position]
+                    [rope]
                 )
-                .map(({ tailX, tailY }) => `${tailX}_${tailY}`)
+                .map((rope) => rope.slice(-1))
+                .map(([{ x, y }]) => `${x}_${y}`)
         )
     ).length
