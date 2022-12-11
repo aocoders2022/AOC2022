@@ -1,10 +1,12 @@
-export const processPartialRound = (current, monkeys, onInspect = () => {}) => {
+export const processPartialRound = (
+    current,
+    monkeys,
+    reduceWorry = (item) => Math.floor(item / 3)
+) => {
     const { falsey, items, operation, test, truthy } = monkeys.find((m) => m.monkey === current)
 
-    onInspect(current, items.length)
-
     const operatedItems = items.map(operation)
-    const boredItems = operatedItems.map((item) => Math.floor(item / 3))
+    const boredItems = operatedItems.map(reduceWorry)
     const truthyItems = boredItems.filter(test)
     const falseyItems = boredItems.filter((item) => !test(item))
 
@@ -30,12 +32,9 @@ export const processPartialRound = (current, monkeys, onInspect = () => {}) => {
     })
 }
 
-export const processRound = (monkeys, onInspect = () => {}) =>
+export const processRound = (monkeys) =>
     monkeys.reduce(
-        ([current, newMonkeys]) => [
-            current + 1,
-            processPartialRound(current, newMonkeys, onInspect),
-        ],
+        ([current, newMonkeys]) => [current + 1, processPartialRound(current, newMonkeys)],
         [0, monkeys]
     )[1]
 
@@ -44,18 +43,39 @@ export const processRounds = (rounds, monkeys) =>
         .fill(null)
         .reduce((newMonkeys) => processRound(newMonkeys), monkeys)
 
-export const findMonkeyBusinessLevel = (rounds, monkeys) => {
-    const counters = {}
+export const findMonkeyBusinessLevel = (rounds, monkeys, reduceWorry) => {
+    const base = monkeys.reduce((prev, monkey) => prev * monkey.divisible, 1)
 
-    Array(rounds)
+    const processRound = (m, counters) =>
+        m
+            .reduce(
+                ([current, newMonkeys, counters]) => [
+                    current + 1,
+                    processPartialRound(current, newMonkeys, (item) => item % base),
+                    {
+                        ...counters,
+                        [current]:
+                            (counters[current] || 0) +
+                            newMonkeys.find(({ monkey }) => monkey === current).items.length,
+                    },
+                ],
+                [0, m, counters]
+            )
+            .slice(1)
+
+    const newMonkeys = Array(rounds)
         .fill(null)
-        .reduce((newMonkeys) => {
-            return processRound(newMonkeys, (id, count) => {
-                counters[id] = (counters[id] || 0) + count
-            })
-        }, monkeys)
+        .reduce(
+            ([newMonkeys, counters], _, i) => {
+                // if (i === 18) {
+                //     throw processPartialRound(0, newMonkeys)
+                // }
+                return processRound(newMonkeys, counters)
+            },
+            [monkeys, {}]
+        )
 
-    const [highest, secondHighest] = Object.values(counters).sort((a, b) => b - a)
+    const [highest, secondHighest] = Object.values(newMonkeys[1]).sort((a, b) => b - a)
 
     return highest * secondHighest
 }

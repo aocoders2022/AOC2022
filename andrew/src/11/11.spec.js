@@ -15,12 +15,13 @@ const parseBlock = (block) => {
     const operation = (old) => eval(line3.replace("Operation: new = ", ""))
 
     const test = (item) => item % Number(line4.replace("Test: divisible by ", "")) === 0
+    const divisible = Number(line4.replace("Test: divisible by ", ""))
 
     const truthy = Number(line5.replace("If true: throw to monkey ", ""))
 
     const falsey = Number(line6.replace("If false: throw to monkey ", ""))
 
-    return { falsey, items, monkey, operation, test, truthy }
+    return { divisible, falsey, items, monkey, operation, test, truthy }
 }
 
 const parseInput = (input) => input.trim().split("\n\n").map(parseBlock)
@@ -30,10 +31,16 @@ const EXAMPLE = parseInput(String(readFileSync(resolve(__dirname, "11.example.tx
 const INPUT = parseInput(String(readFileSync(resolve(__dirname, "11.input.txt"))))
 
 describe("findMonkeyBusinessLevel", () => {
-    it("should return the monkey business level after the number of rounds", () => {
-        expect(findMonkeyBusinessLevel(20, EXAMPLE)).toEqual(10605)
+    it.only("should return the monkey business level after the number of rounds", () => {
+        // expect(findMonkeyBusinessLevel(20, EXAMPLE)).toEqual(10605)
 
-        expect(findMonkeyBusinessLevel(20, INPUT)).toEqual(120756)
+        // expect(findMonkeyBusinessLevel(20, INPUT)).toEqual(120756)
+
+        expect(findMonkeyBusinessLevel(20, EXAMPLE, (item) => item)).toEqual(10197)
+
+        expect(findMonkeyBusinessLevel(10000, EXAMPLE, (item) => item)).toEqual(2713310158)
+
+        expect(findMonkeyBusinessLevel(10000, INPUT, (item) => item)).toEqual(39109444654)
     })
 })
 
