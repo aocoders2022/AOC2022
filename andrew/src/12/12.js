@@ -11,9 +11,14 @@ export const getEndCoordinates = getCoordinates.bind(null, "E")
 
 export const getNumericValue = (letter) => letter.charCodeAt(0) - 96
 
-export const getStartCoordinates = getCoordinates.bind(null, "S")
-
 export const getRow = ([r], grid) => grid[r]
+
+export const getShortestPath = ([fromR, fromC], [toR, toC], grid) => []
+
+export const getShortestPathLength = ([fromR, fromC], [toR, toC], grid) =>
+    getShortestPath([fromR, fromC], [toR, toC], grid).length
+
+export const getStartCoordinates = getCoordinates.bind(null, "S")
 
 export const getSurroundingCoordinates = ([r, c]) => [
     [r - 1, c],
