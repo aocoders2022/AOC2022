@@ -10,7 +10,7 @@ export const getCoordinates = (character, grid) => {
 export const getEndCoordinates = getCoordinates.bind(null, "E")
 
 export const getNumericValue = (letter) =>
-    letter.toLowerCase() === letter ? letter.charCodeAt(0) - 96 : letter === "E" ? 27 : 0
+    letter.toLowerCase() === letter ? letter.charCodeAt(0) - 96 : letter === "E" ? 26 : 1
 
 export const getRow = ([r], grid) => grid[r] || null
 
@@ -45,8 +45,8 @@ export const isTraversable = ([fromR, fromC], [toR, toC], grid) =>
 
 export const makeGrid = ([r, c]) =>
     Array(r)
-        .fill(null)
-        .map(() => Array(c).fill(null))
+        .fill(Infinity)
+        .map(() => Array(c).fill(Infinity))
 
 const makeWeightedGrid = ([r, c], weight, unweightedGrid, grid) => {
     const surroundingTraversableCoordinates = getSurroundingTraversableCoordinates([r, c], grid)
@@ -55,7 +55,7 @@ const makeWeightedGrid = ([r, c], weight, unweightedGrid, grid) => {
         ([changedCoordinates, partiallyWeightedGrid], [stcR, stcC]) => {
             const weightedValue = getCell([stcR, stcC], partiallyWeightedGrid)
 
-            if (weightedValue === null || weight < weightedValue) {
+            if (weight < weightedValue) {
                 return [
                     [...changedCoordinates, [stcR, stcC]],
                     updateGrid([stcR, stcC], weight, partiallyWeightedGrid),

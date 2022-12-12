@@ -42,6 +42,8 @@ describe("getCoordinates", () => {
 describe("getEndCoordinates", () => {
     it("should return the coordinates of the end", () => {
         expect(getEndCoordinates(EXAMPLE)).toEqual([2, 5])
+
+        expect(getEndCoordinates(INPUT)).toEqual([20, 91])
     })
 })
 
@@ -51,9 +53,9 @@ describe("getNumericValue", () => {
 
         expect(getNumericValue("z")).toEqual(26)
 
-        expect(getNumericValue("S")).toEqual(0)
+        expect(getNumericValue("S")).toEqual(1)
 
-        expect(getNumericValue("E")).toEqual(27)
+        expect(getNumericValue("E")).toEqual(26)
     })
 })
 
@@ -80,6 +82,8 @@ describe("getShortestPathLength", () => {
 describe("getStartCoordinates", () => {
     it("should return the coordinates of the start", () => {
         expect(getStartCoordinates(EXAMPLE)).toEqual([0, 0])
+
+        expect(getStartCoordinates(INPUT)).toEqual([20, 0])
     })
 })
 
@@ -149,9 +153,9 @@ describe("isTraversable", () => {
 describe("makeGrid", () => {
     it("should return a new grid with the given size", () => {
         expect(makeGrid([3, 4])).toEqual([
-            [null, null, null, null],
-            [null, null, null, null],
-            [null, null, null, null],
+            [Infinity, Infinity, Infinity, Infinity],
+            [Infinity, Infinity, Infinity, Infinity],
+            [Infinity, Infinity, Infinity, Infinity],
         ])
     })
 })
@@ -160,14 +164,14 @@ describe("updateGrid", () => {
     it("should return a new grid with the given value updated", () => {
         expect(
             updateGrid([1, 2], 1, [
-                [null, null, null, null],
-                [null, null, null, null],
-                [null, null, null, null],
+                [Infinity, Infinity, Infinity, Infinity],
+                [Infinity, Infinity, Infinity, Infinity],
+                [Infinity, Infinity, Infinity, Infinity],
             ])
         ).toEqual([
-            [null, null, null, null],
-            [null, null, 1, null],
-            [null, null, null, null],
+            [Infinity, Infinity, Infinity, Infinity],
+            [Infinity, Infinity, 1, Infinity],
+            [Infinity, Infinity, Infinity, Infinity],
         ])
     })
 })
