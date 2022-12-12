@@ -1,4 +1,4 @@
-export const getCell = ([r, c], grid) => getRow([r, c], grid)[c]
+export const getCell = ([r, c], grid) => getRow([r, c], grid)?.[c] || null
 
 export const getCoordinates = (character, grid) => {
     const r = grid.findIndex((row) => row.includes(character))
@@ -9,20 +9,82 @@ export const getCoordinates = (character, grid) => {
 
 export const getEndCoordinates = getCoordinates.bind(null, "E")
 
-export const getNumericValue = (letter) => letter.charCodeAt(0) - 96
+export const getNumericValue = (letter) =>
+    letter.toLowerCase() === letter ? letter.charCodeAt(0) - 96 : letter === "E" ? 27 : 0
 
-export const getRow = ([r], grid) => grid[r]
+export const getRow = ([r], grid) => grid[r] || null
 
-export const getShortestPath = ([fromR, fromC], [toR, toC], grid) => []
+// export const getShortestPath = ([fromR, fromC], [toR, toC], grid) => {
+//     const weightedGrid = makeWeightedGrid(
+//         [fromR, fromC],
+//         1,
+//         updateGrid([fromR, fromC], 0, makeGrid([grid.length, getRow([0, 0], grid).length])),
+//         grid
+//     )
 
-export const getShortestPathLength = ([fromR, fromC], [toR, toC], grid) =>
-    getShortestPath([fromR, fromC], [toR, toC], grid).length
+//     throw "\n" + weightedGrid.map((line) => line.join("|")).join("\n")
+
+//     return []
+// }
+
+export const getShortestPathLength = ([fromR, fromC], [toR, toC], grid) => {
+    const weightedGrid = makeWeightedGrid(
+        [fromR, fromC],
+        1,
+        updateGrid([fromR, fromC], 0, makeGrid([grid.length, getRow([0, 0], grid).length])),
+        grid
+    )
+
+    return getCell([toR, toC], weightedGrid)
+}
 
 export const getStartCoordinates = getCoordinates.bind(null, "S")
 
-export const getSurroundingCoordinates = ([r, c]) => [
-    [r - 1, c],
-    [r, c - 1],
-    [r, c + 1],
-    [r + 1, c],
-]
+export const getSurroundingCoordinates = ([r, c], grid) =>
+    [
+        [r - 1, c],
+        [r, c - 1],
+        [r, c + 1],
+        [r + 1, c],
+    ].filter((coordinates) => getCell(coordinates, grid))
+
+export const getSurroundingTraversableCoordinates = ([r, c], grid) =>
+    getSurroundingCoordinates([r, c], grid).filter((coordinates) =>
+        isTraversable([r, c], coordinates, grid)
+    )
+
+export const isTraversable = ([fromR, fromC], [toR, toC], grid) =>
+    getNumericValue(getCell([toR, toC], grid)) <= getNumericValue(getCell([fromR, fromC], grid)) + 1
+
+export const makeGrid = ([r, c]) =>
+    Array(r)
+        .fill(null)
+        .map(() => Array(c).fill(null))
+
+const makeWeightedGrid = ([r, c], weight, unweightedGrid, grid) => {
+    const surroundingTraversableCoordinates = getSurroundingTraversableCoordinates([r, c], grid)
+
+    const [changedCoordinates, partiallyWeightedGrid] = surroundingTraversableCoordinates.reduce(
+        ([changedCoordinates, partiallyWeightedGrid], [stcR, stcC]) => {
+            const weightedValue = getCell([stcR, stcC], partiallyWeightedGrid)
+
+            if (!weightedValue || weight < weightedValue) {
+                return [
+                    [...changedCoordinates, [stcR, stcC]],
+                    updateGrid([stcR, stcC], weight, partiallyWeightedGrid),
+                ]
+            }
+
+            return [changedCoordinates, partiallyWeightedGrid]
+        },
+        [[], unweightedGrid]
+    )
+
+    return changedCoordinates.reduce(
+        (weightedGrid, [r, c]) => makeWeightedGrid([r, c], weight + 1, weightedGrid, grid),
+        partiallyWeightedGrid
+    )
+}
+
+export const updateGrid = ([r, c], value, grid) =>
+    grid.map((row, i) => row.map((cell, j) => (r === i && c === j ? value : cell)))
