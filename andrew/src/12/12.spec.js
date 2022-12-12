@@ -29,6 +29,8 @@ describe("getCell", () => {
         expect(getCell([1, 1], EXAMPLE)).toEqual("b")
 
         expect(getCell([-1, -1], EXAMPLE)).toEqual(null)
+
+        expect(getCell([0, 0], [[0]])).toEqual(0)
     })
 })
 

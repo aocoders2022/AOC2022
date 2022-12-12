@@ -1,4 +1,4 @@
-export const getCell = ([r, c], grid) => getRow([r, c], grid)?.[c] || null
+export const getCell = ([r, c], grid) => getRow([r, c], grid)?.[c] ?? null
 
 export const getCoordinates = (character, grid) => {
     const r = grid.findIndex((row) => row.includes(character))
@@ -22,9 +22,22 @@ export const getRow = ([r], grid) => grid[r] || null
 //         grid
 //     )
 
-//     throw "\n" + weightedGrid.map((line) => line.join("|")).join("\n")
+//     const getPath = ([r, c]) => {
+//         const cell = getCell([r, c], weightedGrid)
 
-//     return []
+//         if (cell === 0) {
+//             return [[r, c]]
+//         }
+
+//         const surroundingCoordinates = getSurroundingCoordinates([r, c], weightedGrid)
+//         const nextCoordinate = surroundingCoordinates
+//             .reverse()
+//             .find(([r1, c1]) => getCell([r1, c1], weightedGrid) === cell - 1)
+
+//         return [[r, c], ...getPath(nextCoordinate)]
+//     }
+
+//     return getPath([toR, toC]).reverse()
 // }
 
 export const getShortestPathLength = ([fromR, fromC], [toR, toC], grid) => {
@@ -46,7 +59,7 @@ export const getSurroundingCoordinates = ([r, c], grid) =>
         [r, c - 1],
         [r, c + 1],
         [r + 1, c],
-    ].filter((coordinates) => getCell(coordinates, grid))
+    ].filter((coordinates) => getCell(coordinates, grid) !== null)
 
 export const getSurroundingTraversableCoordinates = ([r, c], grid) =>
     getSurroundingCoordinates([r, c], grid).filter((coordinates) =>
@@ -68,7 +81,7 @@ const makeWeightedGrid = ([r, c], weight, unweightedGrid, grid) => {
         ([changedCoordinates, partiallyWeightedGrid], [stcR, stcC]) => {
             const weightedValue = getCell([stcR, stcC], partiallyWeightedGrid)
 
-            if (!weightedValue || weight < weightedValue) {
+            if (weightedValue === null || weight < weightedValue) {
                 return [
                     [...changedCoordinates, [stcR, stcC]],
                     updateGrid([stcR, stcC], weight, partiallyWeightedGrid),
