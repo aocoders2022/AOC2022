@@ -14,32 +14,6 @@ export const getNumericValue = (letter) =>
 
 export const getRow = ([r], grid) => grid[r] || null
 
-// export const getShortestPath = ([fromR, fromC], [toR, toC], grid) => {
-//     const weightedGrid = makeWeightedGrid(
-//         [fromR, fromC],
-//         1,
-//         updateGrid([fromR, fromC], 0, makeGrid([grid.length, getRow([0, 0], grid).length])),
-//         grid
-//     )
-
-//     const getPath = ([r, c]) => {
-//         const cell = getCell([r, c], weightedGrid)
-
-//         if (cell === 0) {
-//             return [[r, c]]
-//         }
-
-//         const surroundingCoordinates = getSurroundingCoordinates([r, c], weightedGrid)
-//         const nextCoordinate = surroundingCoordinates
-//             .reverse()
-//             .find(([r1, c1]) => getCell([r1, c1], weightedGrid) === cell - 1)
-
-//         return [[r, c], ...getPath(nextCoordinate)]
-//     }
-
-//     return getPath([toR, toC]).reverse()
-// }
-
 export const getShortestPathLength = ([fromR, fromC], [toR, toC], grid) => {
     const weightedGrid = makeWeightedGrid(
         [fromR, fromC],
