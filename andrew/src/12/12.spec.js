@@ -5,6 +5,7 @@ import {
     getNumericValue,
     getRow,
     getShortestPathLength,
+    getShortestDownwardPathLength,
     getStartCoordinates,
     getSurroundingCoordinates,
     getSurroundingTraversableCoordinates,
@@ -74,6 +75,14 @@ describe("getShortestPathLength", () => {
         expect(
             getShortestPathLength(getStartCoordinates(INPUT), getEndCoordinates(INPUT), INPUT)
         ).toEqual(425)
+    })
+})
+
+describe("getShortestDownwardPathLength", () => {
+    it("should return the shortest downward path length", () => {
+        expect(getShortestDownwardPathLength(getEndCoordinates(EXAMPLE), EXAMPLE)).toEqual(29)
+
+        expect(getShortestDownwardPathLength(getEndCoordinates(INPUT), INPUT)).toEqual(418)
     })
 })
 

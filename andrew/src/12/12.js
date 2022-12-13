@@ -41,6 +41,18 @@ export const getShortestPathLength = ([fromR, fromC], [toR, toC], grid) => {
     return Infinity
 }
 
+export const getShortestDownwardPathLength = ([fromR, fromC], grid) =>
+    Math.min(
+        ...grid
+            .map((row, r) =>
+                row
+                    .map((_, c) => [r, c])
+                    .filter((coordinates) => getNumericValue(getCell(coordinates, grid)) === 1)
+            )
+            .flat(1)
+            .map((coordinates) => getShortestPathLength(coordinates, [fromR, fromC], grid))
+    )
+
 export const getStartCoordinates = getCoordinates.bind(null, "S")
 
 export const getSurroundingCoordinates = ([r, c], grid) =>
