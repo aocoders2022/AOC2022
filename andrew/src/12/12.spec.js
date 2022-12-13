@@ -5,12 +5,11 @@ import {
     getNumericValue,
     getRow,
     getShortestPathLength,
+    getShortestDownwardPathLength,
     getStartCoordinates,
     getSurroundingCoordinates,
     getSurroundingTraversableCoordinates,
     isTraversable,
-    makeGrid,
-    updateGrid,
 } from "@/12/12"
 import { readFileSync } from "fs"
 import { resolve } from "path"
@@ -76,6 +75,14 @@ describe("getShortestPathLength", () => {
         expect(
             getShortestPathLength(getStartCoordinates(INPUT), getEndCoordinates(INPUT), INPUT)
         ).toEqual(425)
+    })
+})
+
+describe("getShortestDownwardPathLength", () => {
+    it("should return the shortest downward path length", () => {
+        expect(getShortestDownwardPathLength(getEndCoordinates(EXAMPLE), EXAMPLE)).toEqual(29)
+
+        expect(getShortestDownwardPathLength(getEndCoordinates(INPUT), INPUT)).toEqual(418)
     })
 })
 
@@ -147,31 +154,5 @@ describe("isTraversable", () => {
         expect(isTraversable([2, 0], [2, 1], EXAMPLE)).toEqual(false)
 
         expect(isTraversable([0, 2], [0, 3], EXAMPLE)).toEqual(false)
-    })
-})
-
-describe("makeGrid", () => {
-    it("should return a new grid with the given size", () => {
-        expect(makeGrid([3, 4])).toEqual([
-            [Infinity, Infinity, Infinity, Infinity],
-            [Infinity, Infinity, Infinity, Infinity],
-            [Infinity, Infinity, Infinity, Infinity],
-        ])
-    })
-})
-
-describe("updateGrid", () => {
-    it("should return a new grid with the given value updated", () => {
-        expect(
-            updateGrid([1, 2], 1, [
-                [Infinity, Infinity, Infinity, Infinity],
-                [Infinity, Infinity, Infinity, Infinity],
-                [Infinity, Infinity, Infinity, Infinity],
-            ])
-        ).toEqual([
-            [Infinity, Infinity, Infinity, Infinity],
-            [Infinity, Infinity, 1, Infinity],
-            [Infinity, Infinity, Infinity, Infinity],
-        ])
     })
 })
