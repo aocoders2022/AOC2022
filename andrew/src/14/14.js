@@ -49,6 +49,27 @@ export const makeMap = (scans, sand) => {
     )
 }
 
+export const makeFlooredMap = (scans, sand) => {
+    const map = makeMap(scans, sand)
+    const colCount = map[0].length
+
+    return [...map, Array(colCount).fill("."), Array(colCount).fill("#")]
+}
+
+export const makeBufferedMap = (map) => {
+    return map.map((row, i) => {
+        const isLastRow = i === map.length - 1
+
+        return [
+            isLastRow ? "#" : ".",
+            isLastRow ? "#" : ".",
+            ...row,
+            isLastRow ? "#" : ".",
+            isLastRow ? "#" : ".",
+        ]
+    })
+}
+
 export const letSandFall = (map) => {
     const entryRow = map.findIndex((row) => row.includes("+"))
     const entryCol = map[entryRow].findIndex((cell) => cell.includes("+"))
@@ -107,6 +128,72 @@ export const letSandFall = (map) => {
     )
 }
 
+export const letSandFallToFloor = (map) => {
+    const entryRow = map.findIndex((row) => row.includes("+"))
+
+    const entryCol = map[entryRow].findIndex((cell) => cell.includes("+"))
+
+    const canFall = ({ col, row }) => {
+        return (
+            map[row + 1][col] === "." ||
+            (map[sandCoordinates.row + 1][sandCoordinates.col] !== "." &&
+                map[sandCoordinates.row + 1][sandCoordinates.col - 1] === ".") ||
+            (map[sandCoordinates.row + 1][sandCoordinates.col] !== "." &&
+                map[sandCoordinates.row + 1][sandCoordinates.col + 1] === ".")
+        )
+    }
+
+    let sandCoordinates = { col: entryCol, row: entryRow }
+
+    while (canFall(sandCoordinates)) {
+        if (map[sandCoordinates.row + 1][sandCoordinates.col] === ".") {
+            sandCoordinates = {
+                ...sandCoordinates,
+                row: sandCoordinates.row + 1,
+            }
+        } else {
+            if (
+                map[sandCoordinates.row + 1][sandCoordinates.col] !== "." &&
+                map[sandCoordinates.row + 1][sandCoordinates.col - 1] === "."
+            ) {
+                sandCoordinates = {
+                    ...sandCoordinates,
+                    row: sandCoordinates.row + 1,
+                    col: sandCoordinates.col - 1,
+                }
+            } else if (
+                map[sandCoordinates.row + 1][sandCoordinates.col] !== "." &&
+                map[sandCoordinates.row + 1][sandCoordinates.col + 1] === "."
+            ) {
+                sandCoordinates = {
+                    ...sandCoordinates,
+                    row: sandCoordinates.row + 1,
+                    col: sandCoordinates.col + 1,
+                }
+            }
+        }
+
+        if (!map[sandCoordinates.row + 1]) {
+            throw "issue"
+        }
+
+        if (
+            !map[sandCoordinates.row + 1][sandCoordinates.col - 1] ||
+            !map[sandCoordinates.row + 1][sandCoordinates.col + 1]
+        ) {
+            map = makeBufferedMap(map)
+            sandCoordinates = {
+                ...sandCoordinates,
+                col: sandCoordinates.col + 2,
+            }
+        }
+    }
+
+    return map.map((row, r) =>
+        row.map((cell, c) => (r === sandCoordinates.row && c === sandCoordinates.col ? "o" : cell))
+    )
+}
+
 export const dropSand = (number, map) => {
     let i = 0
     let currentMap = map
@@ -125,7 +212,35 @@ export const dropSand = (number, map) => {
     return currentMap
 }
 
+export const dropFlooredSand = (number, map) => {
+    let i = 0
+    let currentMap = map
+
+    while (i < number) {
+        const newMap = letSandFallToFloor(currentMap)
+
+        if (newMap.findIndex((row) => row.includes("+")) === -1) {
+            return newMap
+        }
+
+        if (JSON.stringify(newMap) === JSON.stringify(currentMap)) {
+            return currentMap
+        }
+
+        currentMap = newMap
+        i++
+    }
+
+    return currentMap
+}
+
 export const countSandParticles = (map) =>
     dropSand(Infinity, map)
         .flat()
         .filter((cell) => cell === "o").length
+
+export const countFlooredSandParticles = (map) => {
+    return dropFlooredSand(Infinity, map)
+        .flat()
+        .filter((cell) => cell === "o").length
+}
