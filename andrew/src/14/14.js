@@ -15,9 +15,9 @@ export const makeMap = (scans, sand) => {
     const firstColIndex = Math.min(...colCoordinates)
     const lastColIndex = Math.max(...colCoordinates)
 
-    const emptyMap = Array(lastColIndex - firstColIndex + 1)
+    const emptyMap = Array(lastRowIndex - firstRowIndex + 1)
         .fill(null)
-        .map(() => Array(lastRowIndex - firstRowIndex + 1).fill("."))
+        .map(() => Array(lastColIndex - firstColIndex + 1).fill("."))
 
     const offsetCol = (col) => col - firstColIndex
 
@@ -92,6 +92,14 @@ export const letSandFall = (map) => {
                 }
             }
         }
+
+        if (
+            !map[sandCoordinates.row + 1] ||
+            !map[sandCoordinates.row + 1][sandCoordinates.col - 1] ||
+            !map[sandCoordinates.row + 1][sandCoordinates.col + 1]
+        ) {
+            return map
+        }
     }
 
     return map.map((row, r) =>
@@ -101,19 +109,23 @@ export const letSandFall = (map) => {
 
 export const dropSand = (number, map) => {
     let i = 0
+    let currentMap = map
 
     while (i < number) {
-        map = letSandFall(map)
+        const newMap = letSandFall(currentMap)
+
+        if (JSON.stringify(newMap) === JSON.stringify(currentMap)) {
+            return currentMap
+        }
+
+        currentMap = newMap
         i++
     }
 
-    return map
-
-    // for number times (maybe infinity?)
-    // keep dropping sand
-    // if It goes off the edge, break & return the map
+    return currentMap
 }
 
-export const countSandParticles = (map) => {
-    // count the particles
-}
+export const countSandParticles = (map) =>
+    dropSand(Infinity, map)
+        .flat()
+        .filter((cell) => cell === "o").length
