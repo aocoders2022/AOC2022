@@ -67,3 +67,18 @@ export const countPaired = (pairs) => {
             return count
         }, 0)
 }
+
+export const sortPackets = (packets) => {
+    return [...packets].sort((left, right) => {
+        return isCorrectPacketOrder(left, right) ? -1 : 1
+    })
+}
+
+export const findDecoderKey = (packets) => {
+    const sortedPackets = sortPackets(packets)
+
+    const dividerIndex1 = sortedPackets.findIndex((packet) => packet === packets[0])
+    const dividerIndex2 = sortedPackets.findIndex((packet) => packet === packets[1])
+
+    return (dividerIndex1 + 1) * (dividerIndex2 + 1)
+}
