@@ -608,7 +608,7 @@ describe("countSandParticles", () => {
 })
 
 describe("countFlooredSandParticles", () => {
-    it("should return the floored sand particle count", () => {
+    it.skip("should return the floored sand particle count", () => {
         expect(
             countFlooredSandParticles(
                 makeFlooredMap(
