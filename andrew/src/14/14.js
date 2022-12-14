@@ -48,3 +48,72 @@ export const makeMap = (scans, sand) => {
         row.map((col, c) => (isRock([r, c]) ? "#" : isSand([r, c]) ? "+" : col))
     )
 }
+
+export const letSandFall = (map) => {
+    const entryRow = map.findIndex((row) => row.includes("+"))
+    const entryCol = map[entryRow].findIndex((cell) => cell.includes("+"))
+
+    const canFall = ({ col, row }) => {
+        return (
+            map[row + 1][col] === "." ||
+            (map[sandCoordinates.row + 1][sandCoordinates.col] !== "." &&
+                map[sandCoordinates.row + 1][sandCoordinates.col - 1] === ".") ||
+            (map[sandCoordinates.row + 1][sandCoordinates.col] !== "." &&
+                map[sandCoordinates.row + 1][sandCoordinates.col + 1] === ".")
+        )
+    }
+
+    let sandCoordinates = { col: entryCol, row: entryRow }
+
+    while (canFall(sandCoordinates)) {
+        if (map[sandCoordinates.row + 1][sandCoordinates.col] === ".") {
+            sandCoordinates = {
+                ...sandCoordinates,
+                row: sandCoordinates.row + 1,
+            }
+        } else {
+            if (
+                map[sandCoordinates.row + 1][sandCoordinates.col] !== "." &&
+                map[sandCoordinates.row + 1][sandCoordinates.col - 1] === "."
+            ) {
+                sandCoordinates = {
+                    ...sandCoordinates,
+                    row: sandCoordinates.row + 1,
+                    col: sandCoordinates.col - 1,
+                }
+            } else if (
+                map[sandCoordinates.row + 1][sandCoordinates.col] !== "." &&
+                map[sandCoordinates.row + 1][sandCoordinates.col + 1] === "."
+            ) {
+                sandCoordinates = {
+                    ...sandCoordinates,
+                    row: sandCoordinates.row + 1,
+                    col: sandCoordinates.col + 1,
+                }
+            }
+        }
+    }
+
+    return map.map((row, r) =>
+        row.map((cell, c) => (r === sandCoordinates.row && c === sandCoordinates.col ? "o" : cell))
+    )
+}
+
+export const dropSand = (number, map) => {
+    let i = 0
+
+    while (i < number) {
+        map = letSandFall(map)
+        i++
+    }
+
+    return map
+
+    // for number times (maybe infinity?)
+    // keep dropping sand
+    // if It goes off the edge, break & return the map
+}
+
+export const countSandParticles = (map) => {
+    // count the particles
+}
