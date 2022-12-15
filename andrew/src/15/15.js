@@ -1,17 +1,5 @@
-export const countRowEmptySpace = (row, coordinates) => {
-    const beaconsInRow = new Set(
-        coordinates
-            .filter(({ beaconY }) => beaconY === row)
-            .map(({ beaconX, beaconY }) => `${beaconX}_${beaconY}`)
-    ).size
-
-    const sensorsInRow = new Set(
-        coordinates
-            .filter(({ sensorY }) => sensorY === row)
-            .map(({ sensorX, sensorY }) => `${sensorX}_${sensorY}`)
-    ).size
-
-    const overlapsInRow = coordinates
+const extractRanges = (row, coordinates) =>
+    coordinates
         .filter(({ beaconX, beaconY, sensorX, sensorY }) => {
             const distance = getDistance({ x: beaconX, y: beaconY }, { x: sensorX, y: sensorY })
 
@@ -43,7 +31,7 @@ export const countRowEmptySpace = (row, coordinates) => {
 
             const [lastStart, lastEnd] = ranges[ranges.length - 1]
 
-            if (start.x <= lastEnd.x && lastEnd.x <= end.x) {
+            if ((start.x <= lastEnd.x && lastEnd.x <= end.x) || lastEnd.x + 1 === start.x) {
                 return [...ranges.slice(0, -1), [lastStart, end]]
             } else if (lastEnd.x < start.x) {
                 return [...ranges, [start, end]]
@@ -51,7 +39,24 @@ export const countRowEmptySpace = (row, coordinates) => {
 
             return ranges
         }, [])
-        .reduce((total, [start, end]) => Math.abs(end.x - start.x) + 1 + total, 0)
+
+export const countRowEmptySpace = (row, coordinates) => {
+    const beaconsInRow = new Set(
+        coordinates
+            .filter(({ beaconY }) => beaconY === row)
+            .map(({ beaconX, beaconY }) => `${beaconX}_${beaconY}`)
+    ).size
+
+    const sensorsInRow = new Set(
+        coordinates
+            .filter(({ sensorY }) => sensorY === row)
+            .map(({ sensorX, sensorY }) => `${sensorX}_${sensorY}`)
+    ).size
+
+    const overlapsInRow = extractRanges(row, coordinates).reduce(
+        (total, [start, end]) => Math.abs(end.x - start.x) + 1 + total,
+        0
+    )
 
     return overlapsInRow - beaconsInRow - sensorsInRow
 }
@@ -73,3 +78,35 @@ export const parseInput = (input) =>
                 Object.entries(coordinates).map(([key, value]) => [key, Number(value)])
             )
         )
+
+export const findTuningFrequency = (size, coordinates) => {
+    const row = Array(size)
+        .fill(null)
+        .map((_, i) => {
+            const ranges = extractRanges(i, coordinates)
+
+            return ranges.map(([start, end]) => {
+                const startX = start.x < 0 ? 0 : start.x > size ? size : start.x
+                const startY = start.y < 0 ? 0 : start.y > size ? size : start.y
+                const endX = end.x < 0 ? 0 : end.x > size ? size : end.x
+                const endY = end.y < 0 ? 0 : end.y > size ? size : end.y
+
+                return [
+                    { x: startX, y: startY },
+                    { x: endX, y: endY },
+                ]
+            })
+        })
+        .filter(
+            (ranges) =>
+                ranges.length > 1 || ranges[0][0].x !== 0 || ranges[ranges.length - 1][1].x !== size // or doesn't touch edge
+        )
+
+    if (row.length > 1) {
+        throw "issue"
+    }
+
+    const [firstBlock] = row[0]
+
+    return (firstBlock[1].x + 1) * 4000000 + firstBlock[0].y
+}
