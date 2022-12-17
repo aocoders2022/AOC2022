@@ -27,16 +27,16 @@ describe("calculatePressure", () => {
 describe("getShortestDistance", () => {
     it("should return the shortest distance between two valves", () => {
         const inputObject = {
-            AA: { connections: ["DD", "II", "BB"], flow: "0", valve: "AA" },
-            BB: { connections: ["CC", "AA"], flow: "13", valve: "BB" },
-            CC: { connections: ["DD", "BB"], flow: "2", valve: "CC" },
-            DD: { connections: ["CC", "AA", "EE"], flow: "20", valve: "DD" },
-            EE: { connections: ["FF", "DD"], flow: "3", valve: "EE" },
-            FF: { connections: ["EE", "GG"], flow: "0", valve: "FF" },
-            GG: { connections: ["FF", "HH"], flow: "0", valve: "GG" },
-            HH: { connections: ["GG"], flow: "22", valve: "HH" },
-            II: { connections: ["AA", "JJ"], flow: "0", valve: "II" },
-            JJ: { connections: ["II"], flow: "21", valve: "JJ" },
+            AA: { connections: ["DD", "II", "BB"], flow: "0" },
+            BB: { connections: ["CC", "AA"], flow: "13" },
+            CC: { connections: ["DD", "BB"], flow: "2" },
+            DD: { connections: ["CC", "AA", "EE"], flow: "20" },
+            EE: { connections: ["FF", "DD"], flow: "3" },
+            FF: { connections: ["EE", "GG"], flow: "0" },
+            GG: { connections: ["FF", "HH"], flow: "0" },
+            HH: { connections: ["GG"], flow: "22" },
+            II: { connections: ["AA", "JJ"], flow: "0" },
+            JJ: { connections: ["II"], flow: "21" },
         }
 
         expect(getShortestDistance("FF", "AA", inputObject)).toEqual(3)
@@ -79,7 +79,6 @@ describe("parseReport", () => {
                     ["JJ", 2],
                 ],
                 flow: 0,
-                valve: "AA",
             },
             BB: {
                 connections: ["CC", "AA"],
@@ -96,7 +95,6 @@ describe("parseReport", () => {
                     ["JJ", 3],
                 ],
                 flow: 13,
-                valve: "BB",
             },
             CC: {
                 connections: ["DD", "BB"],
@@ -113,7 +111,6 @@ describe("parseReport", () => {
                     ["JJ", 4],
                 ],
                 flow: 2,
-                valve: "CC",
             },
             DD: {
                 connections: ["CC", "AA", "EE"],
@@ -130,7 +127,6 @@ describe("parseReport", () => {
                     ["JJ", 3],
                 ],
                 flow: 20,
-                valve: "DD",
             },
             EE: {
                 connections: ["FF", "DD"],
@@ -147,7 +143,6 @@ describe("parseReport", () => {
                     ["JJ", 4],
                 ],
                 flow: 3,
-                valve: "EE",
             },
             FF: {
                 connections: ["EE", "GG"],
@@ -164,7 +159,6 @@ describe("parseReport", () => {
                     ["JJ", 5],
                 ],
                 flow: 0,
-                valve: "FF",
             },
             GG: {
                 connections: ["FF", "HH"],
@@ -181,7 +175,6 @@ describe("parseReport", () => {
                     ["JJ", 6],
                 ],
                 flow: 0,
-                valve: "GG",
             },
             HH: {
                 connections: ["GG"],
@@ -198,7 +191,6 @@ describe("parseReport", () => {
                     ["JJ", 7],
                 ],
                 flow: 22,
-                valve: "HH",
             },
             II: {
                 connections: ["AA", "JJ"],
@@ -215,7 +207,6 @@ describe("parseReport", () => {
                     ["JJ", 1],
                 ],
                 flow: 0,
-                valve: "II",
             },
             JJ: {
                 connections: ["II"],
@@ -232,7 +223,6 @@ describe("parseReport", () => {
                     ["JJ", 0],
                 ],
                 flow: 21,
-                valve: "JJ",
             },
         })
     })

@@ -7,8 +7,7 @@ export const calculatePressure = (
 ) => {
     if (remainingMinutes === 0) return currentPressure
 
-    const valve = parsedReport[currentValve]
-    const nextValves = valve.distances.filter(
+    const nextValves = parsedReport[currentValve].distances.filter(
         ([valve, distance]) =>
             valve !== currentValve &&
             parsedReport[valve].flow &&
@@ -21,11 +20,11 @@ export const calculatePressure = (
     return Math.max(
         ...nextValves.map(([nextValve, distance]) => {
             const newCurrentPressure = currentPressure + parsedReport[nextValve].flow
-
-            const newRemainingMinutes = remainingMinutes - distance - 1
+            const spentMinutes = distance + 1
+            const newRemainingMinutes = remainingMinutes - spentMinutes
 
             return (
-                currentPressure * (distance + 1) +
+                currentPressure * spentMinutes +
                 calculatePressure(
                     newRemainingMinutes,
                     newCurrentPressure,
@@ -41,8 +40,7 @@ export const calculatePressure = (
 export const getShortestDistance = (valveA, valveB, inputObject, isVisited = new Set()) => {
     if (valveA === valveB) return 0
 
-    const valve = inputObject[valveA]
-    const unvisitedConnections = valve.connections.filter(
+    const unvisitedConnections = inputObject[valveA].connections.filter(
         (connection) => !isVisited.has(connection)
     )
 
@@ -66,7 +64,7 @@ export const parseReport = (input) => {
         )
         .map(([, valve, flow, connections]) => [
             valve,
-            { connections: connections.split(", "), flow: Number(flow), valve },
+            { connections: connections.split(", "), flow: Number(flow) },
         ])
 
     const inputObject = Object.fromEntries(inputEntries)
