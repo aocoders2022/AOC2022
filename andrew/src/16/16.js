@@ -37,6 +37,53 @@ export const calculatePressure = (
     )
 }
 
+export const calculateDualPressure = (
+    remainingMinutes,
+    currentPressure,
+    currentValve,
+    parsedReport
+) => {
+    const nextValves = parsedReport[currentValve].distances
+        .filter(([valve]) => valve !== currentValve && parsedReport[valve].flow)
+        .map(([valve]) => valve)
+
+    const possibleCombinations = Array(Math.floor(nextValves.length / 2))
+        .fill(null)
+        .flatMap((_, i) =>
+            nextValves
+                .reduce(
+                    (subsets, value) => subsets.concat(subsets.map((set) => [value, ...set])),
+                    [[]]
+                )
+                .filter((array) => array.length === i + 1)
+                .map((uniqueCombo) => [
+                    uniqueCombo,
+                    nextValves.filter((item) => !uniqueCombo.includes(item)),
+                ])
+        )
+
+    return Math.max(
+        ...possibleCombinations.map(([me, elephant]) => {
+            return (
+                calculatePressure(
+                    remainingMinutes,
+                    currentPressure,
+                    currentValve,
+                    parsedReport,
+                    new Set(me)
+                ) +
+                calculatePressure(
+                    remainingMinutes,
+                    currentPressure,
+                    currentValve,
+                    parsedReport,
+                    new Set(elephant)
+                )
+            )
+        })
+    )
+}
+
 export const getShortestDistance = (valveA, valveB, inputObject, isVisited = new Set()) => {
     if (valveA === valveB) return 0
 

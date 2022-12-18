@@ -1,10 +1,18 @@
-import { calculatePressure, getShortestDistance, parseReport } from "@/16/16"
+import { calculateDualPressure, calculatePressure, getShortestDistance, parseReport } from "@/16/16"
 import { readFileSync } from "fs"
 import { resolve } from "path"
 
 const EXAMPLE = String(readFileSync(resolve(__dirname, "16.example.txt")))
 
 const INPUT = String(readFileSync(resolve(__dirname, "16.input.txt")))
+
+describe("calculateDualPressure", () => {
+    it("should return the dual pressure after the time has elapsed", () => {
+        expect(calculateDualPressure(26, 0, "AA", parseReport(EXAMPLE))).toEqual(1707)
+
+        expect(calculateDualPressure(26, 0, "AA", parseReport(INPUT))).toEqual(2292)
+    })
+})
 
 describe("calculatePressure", () => {
     it("should return the pressure after the time has elapsed", () => {
