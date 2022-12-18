@@ -47,20 +47,26 @@ export const dropRocks = (rocks, chamber, index, jetPatterns) => {
             ? moveRocksLeft(moveableRocks)
             : moveableRocks
 
-    const laterallyMovedRocks = moveRocksLaterally(rocks, index)
-    const downwardMovedRocks = moveRocksDown(laterallyMovedRocks)
+    const moveRocksDownward = (moveableRocks) =>
+        canMoveRocksDown(movingRocks, chamber) ? moveRocksDown(moveableRocks) : moveableRocks
 
-    if (canMoveRocksDown(downwardMovedRocks, chamber)) {
-        return dropRocks(downwardMovedRocks, chamber, index + 1, jetPatterns)
+    let movingRocks = rocks
+    let prevRocks = null
+    let i = index
+
+    while (true) {
+        movingRocks = moveRocksLaterally(movingRocks, i)
+        prevRocks = movingRocks
+        movingRocks = moveRocksDownward(movingRocks)
+
+        i++
+
+        if (movingRocks === prevRocks) {
+            break
+        }
     }
 
-    const laterallyMovedRocksAgain = moveRocksLaterally(downwardMovedRocks, index + 1)
-
-    if (canMoveRocksDown(laterallyMovedRocksAgain, chamber)) {
-        return [moveRocksDown(laterallyMovedRocksAgain), index + 2]
-    }
-
-    return [laterallyMovedRocksAgain, index + 2]
+    return [movingRocks, i]
 }
 
 export const getChamberMaxY = (chamber) => {
@@ -100,7 +106,7 @@ export const getTowerHeight = (iterations, chamber, jetPatterns) => {
         [chamber, 0]
     )
 
-    return getChamberMaxY(fullChamber)
+    return getChamberMaxY(fullChamber) + 1
 }
 
 export const isJetDirectionLeft = (jetDirection) => jetDirection === "<"

@@ -85,7 +85,7 @@ describe("canMoveRocksRight", () => {
     })
 })
 
-describe.only("dropRocks", () => {
+describe("dropRocks", () => {
     it("should drop the rocks within the chamber - example 1", () => {
         const chamber = new Set()
 
@@ -103,11 +103,34 @@ describe.only("dropRocks", () => {
     })
 
     it("should drop the rocks within the chamber - example 3", () => {
-        const chamber = new Set(["3,1", "2,2", "3,2", "4,2", "3,3"])
+        const chamber = new Set(["2,0", "3,0", "4,0", "5,0", "3,1", "2,2", "3,2", "4,2", "3,3"])
 
         expect(
             dropRocks(placeRocksInChamber(makeCornerRocks(), chamber), chamber, 8, EXAMPLE)
-        ).toEqual([new Set(["0,3", "1,3", "2,3", "2,4", "2,5"]), 12])
+        ).toEqual([new Set(["0,3", "1,3", "2,3", "2,4", "2,5"]), 13])
+    })
+
+    it("should drop the rocks within the chamber - example 4", () => {
+        const chamber = new Set([
+            "0,3",
+            "1,3",
+            "2,3",
+            "2,4",
+            "2,5",
+            "2,0",
+            "3,0",
+            "4,0",
+            "5,0",
+            "3,1",
+            "2,2",
+            "3,2",
+            "4,2",
+            "3,3",
+        ])
+
+        expect(
+            dropRocks(placeRocksInChamber(makeVerticalRocks(), chamber), chamber, 13, EXAMPLE)
+        ).toEqual([new Set(["4,3", "4,4", "4,5", "4,6"]), 20])
     })
 })
 
@@ -182,6 +205,8 @@ describe("getNextRocks", () => {
 describe("getTowerHeight", () => {
     it("should return the tower height after a number of iterations", () => {
         expect(getTowerHeight(2022, new Set(), EXAMPLE)).toEqual(3068)
+
+        expect(getTowerHeight(2022, new Set(), INPUT)).toEqual(3232)
     })
 })
 
