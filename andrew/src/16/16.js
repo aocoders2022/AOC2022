@@ -52,7 +52,7 @@ export const calculateDualPressure = (
         .flatMap((_, i) =>
             nextValves
                 .reduce(
-                    (subsets, value) => subsets.concat(subsets.map((set) => [value, ...set])),
+                    (subsets, value) => [...subsets, ...subsets.map((set) => [value, ...set])],
                     [[]]
                 )
                 .filter((array) => array.length === i + 1)
