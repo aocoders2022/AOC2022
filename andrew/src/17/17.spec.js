@@ -9,6 +9,7 @@ import {
     getJetDirection,
     getNextRocks,
     getTowerHeight,
+    isContinuousLoop,
     isJetDirectionLeft,
     isJetDirectionRight,
     makeCornerRocks,

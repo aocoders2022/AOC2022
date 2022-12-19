@@ -90,23 +90,66 @@ export const getNextRocks = (index) => {
 }
 
 export const getTowerHeight = (iterations, chamber, jetPatterns) => {
-    const [fullChamber] = Array.from(Array(iterations), (_, i) => i).reduce(
-        ([partiallyFullChamber, jetPatternIndex], rocksIndex) => {
-            const rocks = getNextRocks(rocksIndex)
+    const cache = new Map()
+    let height = 0
+    try {
+        const [fullChamber] = Array.from(Array(iterations), (_, i) => i).reduce(
+            ([partiallyFullChamber, jetPatternIndex], rocksIndex) => {
+                const rocks = getNextRocks(rocksIndex)
 
-            const [droppedRocks, nextJetPatternIndex] = dropRocks(
-                placeRocksInChamber(rocks, partiallyFullChamber),
-                partiallyFullChamber,
-                jetPatternIndex,
-                jetPatterns
-            )
+                const [droppedRocks, nextJetPatternIndex] = dropRocks(
+                    placeRocksInChamber(rocks, partiallyFullChamber),
+                    partiallyFullChamber,
+                    jetPatternIndex,
+                    jetPatterns
+                )
 
-            return [addRocksToChamber(droppedRocks, partiallyFullChamber), nextJetPatternIndex]
-        },
-        [chamber, 0]
+                const newChamber = addRocksToChamber(droppedRocks, partiallyFullChamber)
+
+                const looped = isContinuousLoop(newChamber, cache, 100)
+
+                if (looped) {
+                    height = height + getChamberMaxY(newChamber) + 1 - (getChamberMaxY(looped) + 1)
+                    // throw [height, getChamberMaxY(looped) + 1, rocksIndex]
+                    return [looped, nextJetPatternIndex]
+                }
+
+                return [newChamber, nextJetPatternIndex]
+            },
+            [chamber, 0]
+        )
+
+        return height + getChamberMaxY(fullChamber) + 1
+    } catch (e) {
+        console.warn(e)
+    }
+}
+
+export const isContinuousLoop = (chamber, cache, size) => {
+    const coordinates = Array.from(chamber).map((xy) => xy.split(",").map(Number))
+    const sortedCoordinatesY = Array.from(
+        new Set(coordinates.map(([, y]) => y).sort((n1, n2) => n2 - n1))
     )
+    const topYCoordinates = sortedCoordinatesY.slice(0, size)
+    const topCoordinates = coordinates.filter(([, y]) => topYCoordinates.includes(y))
 
-    return getChamberMaxY(fullChamber) + 1
+    const normalizedTopCoordinates = topCoordinates.map(([x, y]) => [
+        x,
+        y - topYCoordinates[topYCoordinates.length - 1],
+    ])
+
+    const topCoordinatesKey = normalizedTopCoordinates
+        .map(([x, y]) => `${x},${y}`)
+        .sort()
+        .join("_")
+
+    if (cache.has(topCoordinatesKey)) {
+        return cache.get(topCoordinatesKey)
+    }
+
+    cache.set(topCoordinatesKey, chamber)
+
+    return false
 }
 
 export const isJetDirectionLeft = (jetDirection) => jetDirection === "<"
