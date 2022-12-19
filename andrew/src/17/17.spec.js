@@ -9,7 +9,7 @@ import {
     getJetDirection,
     getNextRocks,
     getTowerHeight,
-    isContinuousLoop,
+    getTowerHeightCached,
     isJetDirectionLeft,
     isJetDirectionRight,
     makeCornerRocks,
@@ -205,9 +205,19 @@ describe("getNextRocks", () => {
 
 describe("getTowerHeight", () => {
     it("should return the tower height after a number of iterations", () => {
+        expect(getTowerHeight(2004, new Set(), EXAMPLE)).toEqual(3040) // 2022 without end
+
         expect(getTowerHeight(2022, new Set(), EXAMPLE)).toEqual(3068)
 
         expect(getTowerHeight(2022, new Set(), INPUT)).toEqual(3232)
+    })
+})
+
+describe("getTowerHeightCached", () => {
+    it("should return the tower height after a number of cached iterations", () => {
+        expect(getTowerHeightCached(1000000000000, new Set(), EXAMPLE)).toEqual(1514285714288)
+
+        expect(getTowerHeightCached(1000000000000, new Set(), INPUT)).toEqual(1585632183915)
     })
 })
 

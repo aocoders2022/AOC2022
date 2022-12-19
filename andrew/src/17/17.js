@@ -89,43 +89,78 @@ export const getNextRocks = (index) => {
     return rockFormations[index % rockFormations.length]
 }
 
-export const getTowerHeight = (iterations, chamber, jetPatterns) => {
+export const getTowerHeightCached = (iterations, chamber, jetPatterns) => {
+    const getHeight = (c) => getChamberMaxY(c) + 1
+
     const cache = new Map()
-    let height = 0
-    try {
-        const [fullChamber] = Array.from(Array(iterations), (_, i) => i).reduce(
-            ([partiallyFullChamber, jetPatternIndex], rocksIndex) => {
-                const rocks = getNextRocks(rocksIndex)
 
-                const [droppedRocks, nextJetPatternIndex] = dropRocks(
-                    placeRocksInChamber(rocks, partiallyFullChamber),
-                    partiallyFullChamber,
-                    jetPatternIndex,
-                    jetPatterns
-                )
+    let partiallyFullChamber = chamber
+    let jetPatternIndex = 0
+    let i = 0
 
-                const newChamber = addRocksToChamber(droppedRocks, partiallyFullChamber)
+    while (i < iterations) {
+        const rocks = getNextRocks(i)
 
-                const looped = isContinuousLoop(newChamber, cache, 100)
-
-                if (looped) {
-                    height = height + getChamberMaxY(newChamber) + 1 - (getChamberMaxY(looped) + 1)
-                    // throw [height, getChamberMaxY(looped) + 1, rocksIndex]
-                    return [looped, nextJetPatternIndex]
-                }
-
-                return [newChamber, nextJetPatternIndex]
-            },
-            [chamber, 0]
+        const [droppedRocks, nextJetPatternIndex] = dropRocks(
+            placeRocksInChamber(rocks, partiallyFullChamber),
+            partiallyFullChamber,
+            jetPatternIndex,
+            jetPatterns
         )
 
-        return height + getChamberMaxY(fullChamber) + 1
-    } catch (e) {
-        console.warn(e)
+        const newChamber = addRocksToChamber(droppedRocks, partiallyFullChamber)
+
+        const isLooped = isContinuousLoop(newChamber, i, cache, 100)
+
+        if (isLooped) {
+            const [chamberAtEndOfFirstLoop, itemsDroppedToFinishFirstLoop] = isLooped
+
+            const loopHeight = getHeight(newChamber) - getHeight(chamberAtEndOfFirstLoop)
+            const startHeight = getHeight(chamberAtEndOfFirstLoop) - loopHeight
+
+            const loopItems = i + 1 - itemsDroppedToFinishFirstLoop
+            const startItems = itemsDroppedToFinishFirstLoop - loopItems
+
+            const iterationsWithoutStart = iterations - startItems
+            const loopCount = Math.floor(iterationsWithoutStart / loopItems)
+            const endItems = iterationsWithoutStart - loopCount * loopItems
+
+            const endHeight =
+                getTowerHeight(itemsDroppedToFinishFirstLoop + endItems, chamber, jetPatterns) -
+                getHeight(chamberAtEndOfFirstLoop)
+
+            return startHeight + loopCount * loopHeight + endHeight
+        } else {
+            partiallyFullChamber = newChamber
+            jetPatternIndex = nextJetPatternIndex
+            i++
+        }
     }
+
+    return getChamberMaxY(partiallyFullChamber) + 1
 }
 
-export const isContinuousLoop = (chamber, cache, size) => {
+export const getTowerHeight = (iterations, chamber, jetPatterns) => {
+    const [fullChamber] = Array.from(Array(iterations), (_, i) => i).reduce(
+        ([partiallyFullChamber, jetPatternIndex], rocksIndex) => {
+            const rocks = getNextRocks(rocksIndex)
+
+            const [droppedRocks, nextJetPatternIndex] = dropRocks(
+                placeRocksInChamber(rocks, partiallyFullChamber),
+                partiallyFullChamber,
+                jetPatternIndex,
+                jetPatterns
+            )
+
+            return [addRocksToChamber(droppedRocks, partiallyFullChamber), nextJetPatternIndex]
+        },
+        [chamber, 0]
+    )
+
+    return getChamberMaxY(fullChamber) + 1
+}
+
+export const isContinuousLoop = (chamber, i, cache, size) => {
     const coordinates = Array.from(chamber).map((xy) => xy.split(",").map(Number))
     const sortedCoordinatesY = Array.from(
         new Set(coordinates.map(([, y]) => y).sort((n1, n2) => n2 - n1))
@@ -147,7 +182,7 @@ export const isContinuousLoop = (chamber, cache, size) => {
         return cache.get(topCoordinatesKey)
     }
 
-    cache.set(topCoordinatesKey, chamber)
+    cache.set(topCoordinatesKey, [chamber, i + 1])
 
     return false
 }
