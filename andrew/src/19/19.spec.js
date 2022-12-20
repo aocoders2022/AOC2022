@@ -1,4 +1,4 @@
-import { followBlueprint, makeInitialState, parseBluePrint } from "@/19/19"
+import { followBlueprint, getNextPossibleStates, makeInitialState, parseBluePrint } from "@/19/19"
 import { readFileSync } from "fs"
 import { resolve } from "path"
 
@@ -145,6 +145,1198 @@ describe("followBlueprint", () => {
         //     geodeCount: 0,
         //     geodeRobotCount: 0,
         // })
+    })
+})
+
+describe("getNextPossibleStates", () => {
+    it("should return all the next possible states after following the blueprint", () => {
+        // minute 1
+        expect(getNextPossibleStates(makeInitialState(), mockBlueprint())).toEqual([
+            {
+                oreCount: 1,
+                oreRobotCount: 1,
+
+                clayCount: 0,
+                clayRobotCount: 0,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 2
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 1,
+                    oreRobotCount: 1,
+
+                    clayCount: 0,
+                    clayRobotCount: 0,
+
+                    obsidianCount: 0,
+                    obsidianRobotCount: 0,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 0,
+                clayRobotCount: 0,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 3
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 2,
+                    oreRobotCount: 1,
+
+                    clayCount: 0,
+                    clayRobotCount: 0,
+
+                    obsidianCount: 0,
+                    obsidianRobotCount: 0,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 3,
+                oreRobotCount: 1,
+
+                clayCount: 0,
+                clayRobotCount: 0,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 1,
+
+                clayCount: 0,
+                clayRobotCount: 1,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 4
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 1,
+                    oreRobotCount: 1,
+
+                    clayCount: 0,
+                    clayRobotCount: 1,
+
+                    obsidianCount: 0,
+                    obsidianRobotCount: 0,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 1,
+                clayRobotCount: 1,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 5
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 2,
+                    oreRobotCount: 1,
+
+                    clayCount: 1,
+                    clayRobotCount: 1,
+
+                    obsidianCount: 0,
+                    obsidianRobotCount: 0,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 3,
+                oreRobotCount: 1,
+
+                clayCount: 2,
+                clayRobotCount: 1,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 1,
+
+                clayCount: 2,
+                clayRobotCount: 2,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 6
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 1,
+                    oreRobotCount: 1,
+
+                    clayCount: 2,
+                    clayRobotCount: 2,
+
+                    obsidianCount: 0,
+                    obsidianRobotCount: 0,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 4,
+                clayRobotCount: 2,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 7
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 2,
+                    oreRobotCount: 1,
+
+                    clayCount: 4,
+                    clayRobotCount: 2,
+
+                    obsidianCount: 0,
+                    obsidianRobotCount: 0,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 3,
+                oreRobotCount: 1,
+
+                clayCount: 6,
+                clayRobotCount: 2,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 1,
+
+                clayCount: 6,
+                clayRobotCount: 3,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 8
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 1,
+                    oreRobotCount: 1,
+
+                    clayCount: 6,
+                    clayRobotCount: 3,
+
+                    obsidianCount: 0,
+                    obsidianRobotCount: 0,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 9,
+                clayRobotCount: 3,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+        // minute 9
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 2,
+                    oreRobotCount: 1,
+
+                    clayCount: 9,
+                    clayRobotCount: 3,
+
+                    obsidianCount: 0,
+                    obsidianRobotCount: 0,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 3,
+                oreRobotCount: 1,
+
+                clayCount: 12,
+                clayRobotCount: 3,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 1,
+
+                clayCount: 12,
+                clayRobotCount: 4,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 10
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 3,
+                    oreRobotCount: 1,
+
+                    clayCount: 12,
+                    clayRobotCount: 3,
+
+                    obsidianCount: 0,
+                    obsidianRobotCount: 0,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 4,
+                oreRobotCount: 1,
+
+                clayCount: 15,
+                clayRobotCount: 3,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 15,
+                clayRobotCount: 4,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 11
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 4,
+                    oreRobotCount: 1,
+
+                    clayCount: 15,
+                    clayRobotCount: 3,
+
+                    obsidianCount: 0,
+                    obsidianRobotCount: 0,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 5,
+                oreRobotCount: 1,
+
+                clayCount: 18,
+                clayRobotCount: 3,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 2,
+
+                clayCount: 18,
+                clayRobotCount: 3,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 1,
+
+                clayCount: 18,
+                clayRobotCount: 5,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 0,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 4,
+                clayRobotCount: 3,
+
+                obsidianCount: 0,
+                obsidianRobotCount: 1,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 12
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 2,
+                    oreRobotCount: 1,
+
+                    clayCount: 4,
+                    clayRobotCount: 3,
+
+                    obsidianCount: 0,
+                    obsidianRobotCount: 1,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 3,
+                oreRobotCount: 1,
+
+                clayCount: 7,
+                clayRobotCount: 3,
+
+                obsidianCount: 1,
+                obsidianRobotCount: 1,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 1,
+
+                clayCount: 7,
+                clayRobotCount: 4,
+
+                obsidianCount: 1,
+                obsidianRobotCount: 1,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 13
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 1,
+                    oreRobotCount: 1,
+
+                    clayCount: 7,
+                    clayRobotCount: 4,
+
+                    obsidianCount: 1,
+                    obsidianRobotCount: 1,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 11,
+                clayRobotCount: 4,
+
+                obsidianCount: 2,
+                obsidianRobotCount: 1,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 14
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 2,
+                    oreRobotCount: 1,
+
+                    clayCount: 11,
+                    clayRobotCount: 4,
+
+                    obsidianCount: 2,
+                    obsidianRobotCount: 1,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 3,
+                oreRobotCount: 1,
+
+                clayCount: 15,
+                clayRobotCount: 4,
+
+                obsidianCount: 3,
+                obsidianRobotCount: 1,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 1,
+
+                clayCount: 15,
+                clayRobotCount: 5,
+
+                obsidianCount: 3,
+                obsidianRobotCount: 1,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 15
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 3,
+                    oreRobotCount: 1,
+
+                    clayCount: 15,
+                    clayRobotCount: 4,
+
+                    obsidianCount: 3,
+                    obsidianRobotCount: 1,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 4,
+                oreRobotCount: 1,
+
+                clayCount: 19,
+                clayRobotCount: 4,
+
+                obsidianCount: 4,
+                obsidianRobotCount: 1,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 19,
+                clayRobotCount: 5,
+
+                obsidianCount: 4,
+                obsidianRobotCount: 1,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 1,
+
+                clayCount: 5,
+                clayRobotCount: 4,
+
+                obsidianCount: 4,
+                obsidianRobotCount: 2,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 16
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 1,
+                    oreRobotCount: 1,
+
+                    clayCount: 5,
+                    clayRobotCount: 4,
+
+                    obsidianCount: 4,
+                    obsidianRobotCount: 2,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 9,
+                clayRobotCount: 4,
+
+                obsidianCount: 6,
+                obsidianRobotCount: 2,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 17
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 2,
+                    oreRobotCount: 1,
+
+                    clayCount: 9,
+                    clayRobotCount: 4,
+
+                    obsidianCount: 6,
+                    obsidianRobotCount: 2,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 3,
+                oreRobotCount: 1,
+
+                clayCount: 13,
+                clayRobotCount: 4,
+
+                obsidianCount: 8,
+                obsidianRobotCount: 2,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 1,
+
+                clayCount: 13,
+                clayRobotCount: 5,
+
+                obsidianCount: 8,
+                obsidianRobotCount: 2,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+        ])
+
+        // minute 18
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 3,
+                    oreRobotCount: 1,
+
+                    clayCount: 13,
+                    clayRobotCount: 4,
+
+                    obsidianCount: 8,
+                    obsidianRobotCount: 2,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 0,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 4,
+                oreRobotCount: 1,
+
+                clayCount: 17,
+                clayRobotCount: 4,
+
+                obsidianCount: 10,
+                obsidianRobotCount: 2,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 17,
+                clayRobotCount: 5,
+
+                obsidianCount: 10,
+                obsidianRobotCount: 2,
+
+                geodeCount: 0,
+                geodeRobotCount: 0,
+            },
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 17,
+                clayRobotCount: 4,
+
+                obsidianCount: 3,
+                obsidianRobotCount: 2,
+
+                geodeCount: 0,
+                geodeRobotCount: 1,
+            },
+        ])
+
+        // minute 19
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 2,
+                    oreRobotCount: 1,
+
+                    clayCount: 17,
+                    clayRobotCount: 4,
+
+                    obsidianCount: 3,
+                    obsidianRobotCount: 2,
+
+                    geodeCount: 0,
+                    geodeRobotCount: 1,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 3,
+                oreRobotCount: 1,
+
+                clayCount: 21,
+                clayRobotCount: 4,
+
+                obsidianCount: 5,
+                obsidianRobotCount: 2,
+
+                geodeCount: 1,
+                geodeRobotCount: 1,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 1,
+
+                clayCount: 21,
+                clayRobotCount: 5,
+
+                obsidianCount: 5,
+                obsidianRobotCount: 2,
+
+                geodeCount: 1,
+                geodeRobotCount: 1,
+            },
+        ])
+
+        // minute 20
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 3,
+                    oreRobotCount: 1,
+
+                    clayCount: 21,
+                    clayRobotCount: 4,
+
+                    obsidianCount: 5,
+                    obsidianRobotCount: 2,
+
+                    geodeCount: 1,
+                    geodeRobotCount: 1,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 4,
+                oreRobotCount: 1,
+
+                clayCount: 25,
+                clayRobotCount: 4,
+
+                obsidianCount: 7,
+                obsidianRobotCount: 2,
+
+                geodeCount: 2,
+                geodeRobotCount: 1,
+            },
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 25,
+                clayRobotCount: 5,
+
+                obsidianCount: 7,
+                obsidianRobotCount: 2,
+
+                geodeCount: 2,
+                geodeRobotCount: 1,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 1,
+
+                clayCount: 11,
+                clayRobotCount: 4,
+
+                obsidianCount: 7,
+                obsidianRobotCount: 3,
+
+                geodeCount: 2,
+                geodeRobotCount: 1,
+            },
+        ])
+
+        // minute 21
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 4,
+                    oreRobotCount: 1,
+
+                    clayCount: 25,
+                    clayRobotCount: 4,
+
+                    obsidianCount: 7,
+                    obsidianRobotCount: 2,
+
+                    geodeCount: 2,
+                    geodeRobotCount: 1,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 5,
+                oreRobotCount: 1,
+
+                clayCount: 29,
+                clayRobotCount: 4,
+
+                obsidianCount: 9,
+                obsidianRobotCount: 2,
+
+                geodeCount: 3,
+                geodeRobotCount: 1,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 2,
+
+                clayCount: 29,
+                clayRobotCount: 4,
+
+                obsidianCount: 9,
+                obsidianRobotCount: 2,
+
+                geodeCount: 3,
+                geodeRobotCount: 1,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 1,
+
+                clayCount: 29,
+                clayRobotCount: 6,
+
+                obsidianCount: 9,
+                obsidianRobotCount: 2,
+
+                geodeCount: 3,
+                geodeRobotCount: 1,
+            },
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 15,
+                clayRobotCount: 4,
+
+                obsidianCount: 9,
+                obsidianRobotCount: 3,
+
+                geodeCount: 3,
+                geodeRobotCount: 1,
+            },
+            {
+                oreCount: 3,
+                oreRobotCount: 1,
+
+                clayCount: 29,
+                clayRobotCount: 4,
+
+                obsidianCount: 2,
+                obsidianRobotCount: 2,
+
+                geodeCount: 3,
+                geodeRobotCount: 2,
+            },
+        ])
+
+        // minute 22
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 3,
+                    oreRobotCount: 1,
+
+                    clayCount: 29,
+                    clayRobotCount: 4,
+
+                    obsidianCount: 2,
+                    obsidianRobotCount: 2,
+
+                    geodeCount: 3,
+                    geodeRobotCount: 2,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 4,
+                oreRobotCount: 1,
+
+                clayCount: 33,
+                clayRobotCount: 4,
+
+                obsidianCount: 4,
+                obsidianRobotCount: 2,
+
+                geodeCount: 5,
+                geodeRobotCount: 2,
+            },
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 33,
+                clayRobotCount: 5,
+
+                obsidianCount: 4,
+                obsidianRobotCount: 2,
+
+                geodeCount: 5,
+                geodeRobotCount: 2,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 1,
+
+                clayCount: 19,
+                clayRobotCount: 4,
+
+                obsidianCount: 4,
+                obsidianRobotCount: 3,
+
+                geodeCount: 5,
+                geodeRobotCount: 2,
+            },
+        ])
+
+        // minute 23
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 4,
+                    oreRobotCount: 1,
+
+                    clayCount: 33,
+                    clayRobotCount: 4,
+
+                    obsidianCount: 4,
+                    obsidianRobotCount: 2,
+
+                    geodeCount: 5,
+                    geodeRobotCount: 2,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 5,
+                oreRobotCount: 1,
+
+                clayCount: 37,
+                clayRobotCount: 4,
+
+                obsidianCount: 6,
+                obsidianRobotCount: 2,
+
+                geodeCount: 7,
+                geodeRobotCount: 2,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 2,
+
+                clayCount: 37,
+                clayRobotCount: 4,
+
+                obsidianCount: 6,
+                obsidianRobotCount: 2,
+
+                geodeCount: 7,
+                geodeRobotCount: 2,
+            },
+            {
+                oreCount: 1,
+                oreRobotCount: 1,
+
+                clayCount: 37,
+                clayRobotCount: 6,
+
+                obsidianCount: 6,
+                obsidianRobotCount: 2,
+
+                geodeCount: 7,
+                geodeRobotCount: 2,
+            },
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 23,
+                clayRobotCount: 4,
+
+                obsidianCount: 6,
+                obsidianRobotCount: 3,
+
+                geodeCount: 7,
+                geodeRobotCount: 2,
+            },
+        ])
+
+        // minute 24
+        expect(
+            getNextPossibleStates(
+                {
+                    oreCount: 5,
+                    oreRobotCount: 1,
+
+                    clayCount: 37,
+                    clayRobotCount: 4,
+
+                    obsidianCount: 6,
+                    obsidianRobotCount: 2,
+
+                    geodeCount: 7,
+                    geodeRobotCount: 2,
+                },
+                mockBlueprint()
+            )
+        ).toEqual([
+            {
+                oreCount: 6,
+                oreRobotCount: 1,
+
+                clayCount: 41,
+                clayRobotCount: 4,
+
+                obsidianCount: 8,
+                obsidianRobotCount: 2,
+
+                geodeCount: 9,
+                geodeRobotCount: 2,
+            },
+            {
+                oreCount: 2,
+                oreRobotCount: 2,
+
+                clayCount: 41,
+                clayRobotCount: 4,
+
+                obsidianCount: 8,
+                obsidianRobotCount: 2,
+
+                geodeCount: 9,
+                geodeRobotCount: 2,
+            },
+            {
+                oreCount: 2,
+                oreRobotCount: 1,
+
+                clayCount: 41,
+                clayRobotCount: 6,
+
+                obsidianCount: 8,
+                obsidianRobotCount: 2,
+
+                geodeCount: 9,
+                geodeRobotCount: 2,
+            },
+            {
+                oreCount: 3,
+                oreRobotCount: 1,
+
+                clayCount: 27,
+                clayRobotCount: 4,
+
+                obsidianCount: 8,
+                obsidianRobotCount: 3,
+
+                geodeCount: 9,
+                geodeRobotCount: 2,
+            },
+        ])
     })
 })
 
