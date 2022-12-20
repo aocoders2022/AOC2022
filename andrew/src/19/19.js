@@ -4,7 +4,7 @@ export const findMaxGeodeCount = (
     state = makeInitialState(),
     cache = new Set()
 ) => {
-    const nextPossibleStates = getNextPossibleStates(state, blueprint).filter(
+    const nextPossibleStates = getNextPossibleStates(state, blueprint, minutes).filter(
         (nextPossibleState) => {
             const key = JSON.stringify([minutes, nextPossibleState])
             const isCached = cache.has(key)
@@ -26,13 +26,13 @@ export const findMaxGeodeCount = (
 
     return Math.max(
         0,
-        ...nextPossibleStates.map((nextPossibleState) =>
-            findMaxGeodeCount(minutes - 1, blueprint, nextPossibleState, cache)
-        )
+        ...nextPossibleStates.map((nextPossibleState) => {
+            return findMaxGeodeCount(minutes - 1, blueprint, nextPossibleState, cache)
+        })
     )
 }
 
-export const getNextPossibleStates = (state, blueprint) => {
+export const getNextPossibleStates = (state, blueprint, remainingTime) => {
     const makeNewState = (partialState) => ({
         ...state,
 
@@ -62,7 +62,9 @@ export const getNextPossibleStates = (state, blueprint) => {
         blueprint.obsidianRobotCostOre,
         blueprint.geodeRobotCostOre
     )
-    const hasReachedMaxOreRobots = state.oreRobotCount >= maxOreNeeded
+    const hasReachedMaxOreRobots =
+        state.oreRobotCount >= maxOreNeeded ||
+        state.oreRobotCount * remainingTime + state.oreCount >= remainingTime * maxOreNeeded
 
     if (canAffordOreRobot && !hasReachedMaxOreRobots) {
         nextPossibleStates.push(
@@ -79,7 +81,9 @@ export const getNextPossibleStates = (state, blueprint) => {
     const canAffordClayRobot = affordableClayRobotCount > 0
 
     const maxClayNeeded = Math.max(blueprint.obsidianRobotCostClay)
-    const hasReachedMaxClayRobots = state.clayRobotCount >= maxClayNeeded
+    const hasReachedMaxClayRobots =
+        state.clayRobotCount >= maxClayNeeded ||
+        state.clayRobotCount * remainingTime + state.clayCount >= remainingTime * maxClayNeeded
 
     if (canAffordClayRobot && !hasReachedMaxClayRobots) {
         nextPossibleStates.push(
@@ -99,7 +103,10 @@ export const getNextPossibleStates = (state, blueprint) => {
     const canAffordObsidianRobot = affordableObsidianRobotCount > 0
 
     const maxObsidianNeeded = Math.max(blueprint.geodeRobotCostObsidian)
-    const hasReachedMaxObsidianRobots = state.obsidianRobotCount >= maxObsidianNeeded
+    const hasReachedMaxObsidianRobots =
+        state.obsidianRobotCount >= maxObsidianNeeded ||
+        state.obsidianRobotCount * remainingTime + state.obsidianCount >=
+            remainingTime * maxObsidianNeeded
 
     if (canAffordObsidianRobot && !hasReachedMaxObsidianRobots) {
         nextPossibleStates.push(
