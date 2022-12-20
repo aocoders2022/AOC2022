@@ -42,7 +42,7 @@ const mockBlueprint2 = () => ({
 
 describe("findMaxGeodeCount", () => {
     it("should return the maximum amount of geodes that could be found within the time frame", () => {
-        expect(findMaxGeodeCount(15, mockBlueprint1())).toEqual(9)
+        expect(findMaxGeodeCount(19, mockBlueprint1())).toEqual(9)
 
         // expect(findMaxGeodeCount(24, mockBlueprint2())).toEqual(12)
     })
@@ -483,11 +483,11 @@ describe("getNextPossibleStates", () => {
                 geodeRobotCount: 0,
             },
             {
-                oreCount: 1,
+                oreCount: 3,
                 oreRobotCount: 1,
 
                 clayCount: 18,
-                clayRobotCount: 5,
+                clayRobotCount: 4,
 
                 obsidianCount: 0,
                 obsidianRobotCount: 0,
@@ -796,32 +796,6 @@ describe("getNextPossibleStates", () => {
                 mockBlueprint1()
             )
         ).toEqual([
-            // {
-            //     oreCount: 4,
-            //     oreRobotCount: 1,
-
-            //     clayCount: 17,
-            //     clayRobotCount: 4,
-
-            //     obsidianCount: 10,
-            //     obsidianRobotCount: 2,
-
-            //     geodeCount: 0,
-            //     geodeRobotCount: 0,
-            // },
-            // {
-            //     oreCount: 2,
-            //     oreRobotCount: 1,
-
-            //     clayCount: 17,
-            //     clayRobotCount: 5,
-
-            //     obsidianCount: 10,
-            //     obsidianRobotCount: 2,
-
-            //     geodeCount: 0,
-            //     geodeRobotCount: 0,
-            // },
             {
                 oreCount: 2,
                 oreRobotCount: 1,
@@ -942,7 +916,6 @@ describe("getNextPossibleStates", () => {
                 geodeRobotCount: 1,
             },
         ])
-
         // minute 21
         expect(
             getNextPossibleStates(
@@ -962,58 +935,6 @@ describe("getNextPossibleStates", () => {
                 mockBlueprint1()
             )
         ).toEqual([
-            // {
-            //     oreCount: 5,
-            //     oreRobotCount: 1,
-
-            //     clayCount: 29,
-            //     clayRobotCount: 4,
-
-            //     obsidianCount: 9,
-            //     obsidianRobotCount: 2,
-
-            //     geodeCount: 3,
-            //     geodeRobotCount: 1,
-            // },
-            // {
-            //     oreCount: 1,
-            //     oreRobotCount: 2,
-
-            //     clayCount: 29,
-            //     clayRobotCount: 4,
-
-            //     obsidianCount: 9,
-            //     obsidianRobotCount: 2,
-
-            //     geodeCount: 3,
-            //     geodeRobotCount: 1,
-            // },
-            // {
-            //     oreCount: 1,
-            //     oreRobotCount: 1,
-
-            //     clayCount: 29,
-            //     clayRobotCount: 6,
-
-            //     obsidianCount: 9,
-            //     obsidianRobotCount: 2,
-
-            //     geodeCount: 3,
-            //     geodeRobotCount: 1,
-            // },
-            // {
-            //     oreCount: 2,
-            //     oreRobotCount: 1,
-
-            //     clayCount: 15,
-            //     clayRobotCount: 4,
-
-            //     obsidianCount: 9,
-            //     obsidianRobotCount: 3,
-
-            //     geodeCount: 3,
-            //     geodeRobotCount: 1,
-            // },
             {
                 oreCount: 3,
                 oreRobotCount: 1,
@@ -1135,11 +1056,11 @@ describe("getNextPossibleStates", () => {
                 geodeRobotCount: 2,
             },
             {
-                oreCount: 1,
+                oreCount: 3,
                 oreRobotCount: 1,
 
                 clayCount: 37,
-                clayRobotCount: 6,
+                clayRobotCount: 5,
 
                 obsidianCount: 6,
                 obsidianRobotCount: 2,
@@ -1208,11 +1129,11 @@ describe("getNextPossibleStates", () => {
                 geodeRobotCount: 2,
             },
             {
-                oreCount: 2,
+                oreCount: 4,
                 oreRobotCount: 1,
 
                 clayCount: 41,
-                clayRobotCount: 6,
+                clayRobotCount: 5,
 
                 obsidianCount: 8,
                 obsidianRobotCount: 2,
