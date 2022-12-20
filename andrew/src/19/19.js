@@ -1,16 +1,44 @@
 export const findMaxGeodeCount = (minutes, blueprint) => {
+    const cache = new Set()
+    let currentMaxGeode = 0
+
     const possibleEndStates = Array.from(Array(minutes), (_, i) => i + 1).reduce(
         (states) => {
             return states.flatMap((state) => {
                 const nextPossibleStates = getNextPossibleStates(state, blueprint)
 
-                return nextPossibleStates
+                const confirmedNextPossibleStates = nextPossibleStates.filter(
+                    (nextPossibleState) => {
+                        // this is a bit of an assumption...
+                        // if (currentMaxGeode && nextPossibleState.geodeCount < currentMaxGeode) {
+                        //     return false
+                        // }
+
+                        return !cache.has(JSON.stringify(nextPossibleState))
+                    }
+                )
+
+                confirmedNextPossibleStates.forEach((nextPossibleState) => {
+                    cache.add(JSON.stringify(nextPossibleState))
+                })
+
+                const maxGeode = Math.max(
+                    ...confirmedNextPossibleStates.map(({ geodeCount }) => geodeCount)
+                )
+
+                if (maxGeode > currentMaxGeode) {
+                    currentMaxGeode = maxGeode
+                }
+
+                return confirmedNextPossibleStates
             })
         },
         [makeInitialState()]
     )
 
     throw possibleEndStates.length
+
+    return currentMaxGeode
 }
 
 export const getNextPossibleStates = (state, blueprint) => {

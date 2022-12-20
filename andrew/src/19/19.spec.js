@@ -40,11 +40,11 @@ const mockBlueprint2 = () => ({
     geodeRobotCostObsidian: 12,
 })
 
-describe.skip("findMaxGeodeCount", () => {
+describe.only("findMaxGeodeCount", () => {
     it("should return the maximum amount of geodes that could be found within the time frame", () => {
-        expect(findMaxGeodeCount(24, mockBlueprint1())).toEqual(9)
+        expect(findMaxGeodeCount(19, mockBlueprint1())).toEqual(9)
 
-        expect(findMaxGeodeCount(24, mockBlueprint2())).toEqual(12)
+        // expect(findMaxGeodeCount(14, mockBlueprint2())).toEqual(12)
     })
 })
 
