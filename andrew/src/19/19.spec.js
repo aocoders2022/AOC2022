@@ -41,14 +41,76 @@ const mockBlueprint2 = () => ({
 })
 
 describe("findMaxGeodeCount", () => {
-    it("should return the maximum amount of geodes that could be found within the time frame", () => {
+    it.only("should return the maximum amount of geodes that could be found within the time frame", () => {
         expect(findMaxGeodeCount(18, mockBlueprint1())).toEqual(0)
 
-        // expect(findMaxGeodeCount(19, mockBlueprint1())).toEqual(1)
+        expect(findMaxGeodeCount(19, mockBlueprint1())).toEqual(1)
 
         // expect(findMaxGeodeCount(24, mockBlueprint1())).toEqual(9)
 
         // expect(findMaxGeodeCount(24, mockBlueprint2())).toEqual(12)
+
+        // expect(findMaxGeodeCount(24, INPUT[0])).toEqual(5)
+
+        // expect(findMaxGeodeCount(24, INPUT[1])).toEqual(0)
+
+        // expect(findMaxGeodeCount(24, INPUT[1])).toEqual(0)
+
+        // expect(findMaxGeodeCount(24, INPUT[2])).toEqual(2)
+
+        // expect(findMaxGeodeCount(24, INPUT[3])).toEqual(10)
+
+        // expect(findMaxGeodeCount(24, INPUT[4])).toEqual(3)
+
+        // expect(findMaxGeodeCount(24, INPUT[5])).toEqual(6)
+
+        // expect(findMaxGeodeCount(24, INPUT[6])).toEqual(0)
+
+        // expect(findMaxGeodeCount(24, INPUT[7])).toEqual(11)
+
+        // expect(findMaxGeodeCount(24, INPUT[8])).toEqual(3)
+
+        // expect(findMaxGeodeCount(24, INPUT[9])).toEqual(8)
+
+        // expect(findMaxGeodeCount(24, INPUT[10])).toEqual(1)
+
+        // expect(findMaxGeodeCount(24, INPUT[11])).toEqual(0)
+
+        // expect(findMaxGeodeCount(24, INPUT[12])).toEqual(1)
+
+        // expect(findMaxGeodeCount(24, INPUT[13])).toEqual(0)
+
+        // expect(findMaxGeodeCount(24, INPUT[14])).toEqual(15)
+
+        // expect(findMaxGeodeCount(24, INPUT[15])).toEqual(0)
+
+        // expect(findMaxGeodeCount(24, INPUT[16])).toEqual(0)
+
+        // expect(findMaxGeodeCount(24, INPUT[17])).toEqual(12)
+
+        // expect(findMaxGeodeCount(24, INPUT[18])).toEqual(0)
+
+        // expect(findMaxGeodeCount(24, INPUT[19])).toEqual(2)
+
+        // expect(findMaxGeodeCount(24, INPUT[20])).toEqual(1)
+
+        // expect(findMaxGeodeCount(24, INPUT[21])).toEqual(0)
+
+        // expect(findMaxGeodeCount(24, INPUT[22])).toEqual(3)
+
+        // expect(findMaxGeodeCount(24, INPUT[23])).toEqual(14)
+
+        // expect(findMaxGeodeCount(24, INPUT[24])).toEqual(1)
+
+        // expect(findMaxGeodeCount(24, INPUT[25])).toEqual(1)
+
+        // expect(findMaxGeodeCount(24, INPUT[26])).toEqual(2)
+
+        // expect(findMaxGeodeCount(24, INPUT[27])).toEqual(0)
+
+        // expect(findMaxGeodeCount(24, INPUT[28])).toEqual(9)
+
+        // expect(findMaxGeodeCount(24, INPUT[29])).toEqual(1)
     })
 })
 

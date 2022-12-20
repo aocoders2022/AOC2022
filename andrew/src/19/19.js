@@ -26,9 +26,9 @@ export const findMaxGeodeCount = (
 
     return Math.max(
         0,
-        ...nextPossibleStates.map((nextPossibleState) => {
-            return findMaxGeodeCount(minutes - 1, blueprint, nextPossibleState, cache)
-        })
+        ...nextPossibleStates.map((nextPossibleState) =>
+            findMaxGeodeCount(minutes - 1, blueprint, nextPossibleState, cache)
+        )
     )
 }
 
