@@ -1,37 +1,56 @@
-export const findMaxGeodeCount = (minutes, blueprint, state = makeInitialState()) => {
+export const findMaxGeodeCount = (
+    minutes,
+    blueprint,
+    state = makeInitialState(),
+    cache = new Set()
+) => {
+    const nextPossibleStates = getNextPossibleStates(state, blueprint).filter(
+        (nextPossibleState) => {
+            const key = JSON.stringify([minutes, nextPossibleState])
+            const isCached = cache.has(key)
+
+            if (!isCached) {
+                cache.add(key)
+            }
+
+            return !isCached
+        }
+    )
+
     if (minutes === 1) {
         return Math.max(
             0,
-            ...getNextPossibleStates(state, blueprint).map(
-                (nextPossibleState) => nextPossibleState.geodeCount
-            )
+            ...nextPossibleStates.map((nextPossibleState) => nextPossibleState.geodeCount)
         )
     }
 
     return Math.max(
         0,
-        ...getNextPossibleStates(state, blueprint).map((nextPossibleState) =>
-            findMaxGeodeCount(minutes - 1, blueprint, nextPossibleState)
+        ...nextPossibleStates.map((nextPossibleState) =>
+            findMaxGeodeCount(minutes - 1, blueprint, nextPossibleState, cache)
         )
     )
 }
 
 export const getNextPossibleStates = (state, blueprint) => {
-    const makeNewState = (partialState) => ({ ...state, ...partialState })
+    const makeNewState = (partialState) => ({
+        ...state,
+
+        oreCount: state.oreCount + state.oreRobotCount,
+
+        clayCount: state.clayCount + state.clayRobotCount,
+
+        obsidianCount: state.obsidianCount + state.obsidianRobotCount,
+
+        geodeCount: state.geodeCount + state.geodeRobotCount,
+
+        ...partialState,
+    })
+
     let nextPossibleStates = []
 
     // save everything
-    nextPossibleStates.push(
-        makeNewState({
-            oreCount: state.oreCount + state.oreRobotCount,
-
-            clayCount: state.clayCount + state.clayRobotCount,
-
-            obsidianCount: state.obsidianCount + state.obsidianRobotCount,
-
-            geodeCount: state.geodeCount + state.geodeRobotCount,
-        })
-    )
+    nextPossibleStates.push(makeNewState({}))
 
     // spend on ore robots
     const affordableOreRobotCount = Math.floor(state.oreCount / blueprint.oreRobotCostOre)
@@ -49,13 +68,8 @@ export const getNextPossibleStates = (state, blueprint) => {
         nextPossibleStates.push(
             makeNewState({
                 oreCount: state.oreCount + state.oreRobotCount - blueprint.oreRobotCostOre,
+
                 oreRobotCount: state.oreRobotCount + 1,
-
-                clayCount: state.clayCount + state.clayRobotCount,
-
-                obsidianCount: state.obsidianCount + state.obsidianRobotCount,
-
-                geodeCount: state.geodeCount + state.geodeRobotCount,
             })
         )
     }
@@ -72,12 +86,7 @@ export const getNextPossibleStates = (state, blueprint) => {
             makeNewState({
                 oreCount: state.oreCount + state.oreRobotCount - blueprint.clayRobotCostOre,
 
-                clayCount: state.clayCount + state.clayRobotCount,
                 clayRobotCount: state.clayRobotCount + 1,
-
-                obsidianCount: state.obsidianCount + state.obsidianRobotCount,
-
-                geodeCount: state.geodeCount + state.geodeRobotCount,
             })
         )
     }
@@ -99,10 +108,7 @@ export const getNextPossibleStates = (state, blueprint) => {
 
                 clayCount: state.clayCount + state.clayRobotCount - blueprint.obsidianRobotCostClay,
 
-                obsidianCount: state.obsidianCount + state.obsidianRobotCount,
                 obsidianRobotCount: state.obsidianRobotCount + 1,
-
-                geodeCount: state.geodeCount + state.geodeRobotCount,
             })
         )
     }
@@ -121,14 +127,11 @@ export const getNextPossibleStates = (state, blueprint) => {
             makeNewState({
                 oreCount: state.oreCount + state.oreRobotCount - blueprint.geodeRobotCostOre,
 
-                clayCount: state.clayCount + state.clayRobotCount,
-
                 obsidianCount:
                     state.obsidianCount +
                     state.obsidianRobotCount -
                     blueprint.geodeRobotCostObsidian,
 
-                geodeCount: state.geodeCount + state.geodeRobotCount,
                 geodeRobotCount: state.geodeRobotCount + 1,
             })
         )
