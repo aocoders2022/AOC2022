@@ -1280,6 +1280,6 @@ describe("sumBlueprintQualityLevels", () => {
         //             geodeCount: findMaxGeodeCount(24, blueprint),
         //         }))
         //     )
-        // ).toEqual(0)
+        // ).toEqual(1624)
     })
 })
