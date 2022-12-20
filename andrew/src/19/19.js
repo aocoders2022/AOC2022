@@ -3,6 +3,7 @@ export const findMaxGeodeCount = (
     blueprint,
     state = makeInitialState(),
     cache = new Set(),
+    highest = { value: 0 },
     skipNextClayRobot = false,
     skipNextOreRobot = false,
     skipNextObsidianRobot = false
@@ -22,14 +23,26 @@ export const findMaxGeodeCount = (
             cache.add(key)
         }
 
+        // const canNeverBeatHighest = nextPossibleState.geodeCount + minutes * 8 < highest.value
+
+        // if (canNeverBeatHighest) {
+        //     return false
+        // }
+
         return !isCached
     })
 
     if (minutes === 1) {
-        return Math.max(
+        const newHighest = Math.max(
             0,
             ...nextPossibleStates.map((nextPossibleState) => nextPossibleState.geodeCount)
         )
+
+        if (newHighest > highest.value) {
+            highest.value = newHighest
+        }
+
+        return newHighest
     }
 
     const canBuildClayRobot =
@@ -77,6 +90,7 @@ export const findMaxGeodeCount = (
                     blueprint,
                     nextPossibleState,
                     cache,
+                    highest,
                     skippedLastClayRobot,
                     skippedLastOreRobot,
                     skippedLastObsidianRobot
@@ -92,13 +106,14 @@ export const findMaxGeodeCount = (
                     blueprint,
                     nextPossibleState,
                     cache,
+                    highest,
                     canBuildClayRobot,
                     canBuildOreRobot,
                     canBuildObsidianRobot
                 )
             }
 
-            return findMaxGeodeCount(minutes - 1, blueprint, nextPossibleState, cache)
+            return findMaxGeodeCount(minutes - 1, blueprint, nextPossibleState, cache, highest)
         })
     )
 }
@@ -187,6 +202,8 @@ export const getNextPossibleStates = (
             remainingTime * maxObsidianNeeded
 
     if (canAffordObsidianRobot && !hasReachedMaxObsidianRobots && !skipNextObsidianRobot) {
+        nextPossibleStates = [] // This is a complete lie... but still.
+
         nextPossibleStates.push(
             makeNewState({
                 oreCount: state.oreCount + state.oreRobotCount - blueprint.obsidianRobotCostOre,

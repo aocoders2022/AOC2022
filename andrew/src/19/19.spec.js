@@ -41,8 +41,8 @@ const mockBlueprint2 = () => ({
 })
 
 describe("findMaxGeodeCount", () => {
-    it("should return the maximum amount of geodes that could be found within the time frame", () => {
-        expect(findMaxGeodeCount(18, mockBlueprint1())).toEqual(0)
+    it.only("should return the maximum amount of geodes that could be found within the time frame", () => {
+        // expect(findMaxGeodeCount(18, mockBlueprint1())).toEqual(0)
 
         // expect(findMaxGeodeCount(19, mockBlueprint1())).toEqual(1)
 
@@ -51,8 +51,6 @@ describe("findMaxGeodeCount", () => {
         // expect(findMaxGeodeCount(24, mockBlueprint2())).toEqual(12)
 
         // expect(findMaxGeodeCount(24, INPUT[0])).toEqual(5)
-
-        // expect(findMaxGeodeCount(24, INPUT[1])).toEqual(0)
 
         // expect(findMaxGeodeCount(24, INPUT[1])).toEqual(0)
 
@@ -111,6 +109,14 @@ describe("findMaxGeodeCount", () => {
         // expect(findMaxGeodeCount(24, INPUT[28])).toEqual(9)
 
         // expect(findMaxGeodeCount(24, INPUT[29])).toEqual(1)
+
+        expect(findMaxGeodeCount(32, INPUT[0])).toEqual(41)
+
+        expect(findMaxGeodeCount(32, INPUT[1])).toEqual(11)
+
+        expect(findMaxGeodeCount(32, INPUT[2])).toEqual(28)
+
+        // part 2 => 12628
     })
 })
 
