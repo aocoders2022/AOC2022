@@ -2,20 +2,28 @@ export const findMaxGeodeCount = (
     minutes,
     blueprint,
     state = makeInitialState(),
-    cache = new Set()
+    cache = new Set(),
+    skipNextClayRobot = false,
+    skipNextOreRobot = false,
+    skipNextObsidianRobot = false
 ) => {
-    const nextPossibleStates = getNextPossibleStates(state, blueprint, minutes).filter(
-        (nextPossibleState) => {
-            const key = JSON.stringify([minutes, nextPossibleState])
-            const isCached = cache.has(key)
+    const nextPossibleStates = getNextPossibleStates(
+        state,
+        blueprint,
+        minutes,
+        skipNextClayRobot,
+        skipNextOreRobot,
+        skipNextObsidianRobot
+    ).filter((nextPossibleState) => {
+        const key = JSON.stringify([minutes, nextPossibleState])
+        const isCached = cache.has(key)
 
-            if (!isCached) {
-                cache.add(key)
-            }
-
-            return !isCached
+        if (!isCached) {
+            cache.add(key)
         }
-    )
+
+        return !isCached
+    })
 
     if (minutes === 1) {
         return Math.max(
@@ -24,15 +32,85 @@ export const findMaxGeodeCount = (
         )
     }
 
+    const canBuildClayRobot =
+        nextPossibleStates.some((nextPossibleState) => {
+            return nextPossibleState.clayRobotCount > state.clayRobotCount
+        }) &&
+        nextPossibleStates.some((nextPossibleState) => {
+            return nextPossibleState.clayRobotCount <= state.clayRobotCount
+        })
+
+    const canBuildOreRobot =
+        nextPossibleStates.some((nextPossibleState) => {
+            return nextPossibleState.oreRobotCount > state.oreRobotCount
+        }) &&
+        nextPossibleStates.some((nextPossibleState) => {
+            return nextPossibleState.oreRobotCount <= state.oreRobotCount
+        })
+
+    const canBuildObsidianRobot =
+        nextPossibleStates.some((nextPossibleState) => {
+            return nextPossibleState.obsidianRobotCount > state.obsidianRobotCount
+        }) &&
+        nextPossibleStates.some((nextPossibleState) => {
+            return nextPossibleState.obsidianRobotCount <= state.obsidianRobotCount
+        })
+
+    const skippedLastClayRobot = skipNextClayRobot
+    const skippedLastOreRobot = skipNextOreRobot
+    const skippedLastObsidianRobot = skipNextObsidianRobot
+
     return Math.max(
         0,
-        ...nextPossibleStates.map((nextPossibleState) =>
-            findMaxGeodeCount(minutes - 1, blueprint, nextPossibleState, cache)
-        )
+        ...nextPossibleStates.map((nextPossibleState) => {
+            const willNotBuildRobot =
+                nextPossibleState.clayRobotCount === state.clayRobotCount &&
+                nextPossibleState.oreRobotCount === state.oreRobotCount &&
+                nextPossibleState.obsidianRobotCount === state.obsidianRobotCount
+
+            if (
+                (skippedLastClayRobot || skippedLastOreRobot || skippedLastObsidianRobot) &&
+                willNotBuildRobot
+            ) {
+                return findMaxGeodeCount(
+                    minutes - 1,
+                    blueprint,
+                    nextPossibleState,
+                    cache,
+                    skippedLastClayRobot,
+                    skippedLastOreRobot,
+                    skippedLastObsidianRobot
+                )
+            }
+
+            if (
+                (canBuildClayRobot || canBuildOreRobot || canBuildObsidianRobot) &&
+                willNotBuildRobot
+            ) {
+                return findMaxGeodeCount(
+                    minutes - 1,
+                    blueprint,
+                    nextPossibleState,
+                    cache,
+                    canBuildClayRobot,
+                    canBuildOreRobot,
+                    canBuildObsidianRobot
+                )
+            }
+
+            return findMaxGeodeCount(minutes - 1, blueprint, nextPossibleState, cache)
+        })
     )
 }
 
-export const getNextPossibleStates = (state, blueprint, remainingTime) => {
+export const getNextPossibleStates = (
+    state,
+    blueprint,
+    remainingTime,
+    skipNextClayRobot,
+    skipNextOreRobot,
+    skipNextObsidianRobot
+) => {
     const makeNewState = (partialState) => ({
         ...state,
 
@@ -66,7 +144,7 @@ export const getNextPossibleStates = (state, blueprint, remainingTime) => {
         state.oreRobotCount >= maxOreNeeded ||
         state.oreRobotCount * remainingTime + state.oreCount >= remainingTime * maxOreNeeded
 
-    if (canAffordOreRobot && !hasReachedMaxOreRobots) {
+    if (canAffordOreRobot && !hasReachedMaxOreRobots && !skipNextOreRobot) {
         nextPossibleStates.push(
             makeNewState({
                 oreCount: state.oreCount + state.oreRobotCount - blueprint.oreRobotCostOre,
@@ -85,7 +163,7 @@ export const getNextPossibleStates = (state, blueprint, remainingTime) => {
         state.clayRobotCount >= maxClayNeeded ||
         state.clayRobotCount * remainingTime + state.clayCount >= remainingTime * maxClayNeeded
 
-    if (canAffordClayRobot && !hasReachedMaxClayRobots) {
+    if (canAffordClayRobot && !hasReachedMaxClayRobots && !skipNextClayRobot) {
         nextPossibleStates.push(
             makeNewState({
                 oreCount: state.oreCount + state.oreRobotCount - blueprint.clayRobotCostOre,
@@ -108,7 +186,7 @@ export const getNextPossibleStates = (state, blueprint, remainingTime) => {
         state.obsidianRobotCount * remainingTime + state.obsidianCount >=
             remainingTime * maxObsidianNeeded
 
-    if (canAffordObsidianRobot && !hasReachedMaxObsidianRobots) {
+    if (canAffordObsidianRobot && !hasReachedMaxObsidianRobots && !skipNextObsidianRobot) {
         nextPossibleStates.push(
             makeNewState({
                 oreCount: state.oreCount + state.oreRobotCount - blueprint.obsidianRobotCostOre,
