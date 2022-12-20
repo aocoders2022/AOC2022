@@ -1,10 +1,18 @@
-import { followBlueprint, getNextPossibleStates, makeInitialState, parseBluePrint } from "@/19/19"
+import {
+    findMaxGeodeCount,
+    getNextPossibleStates,
+    makeInitialState,
+    parseBluePrint,
+    sumBlueprintQualityLevels,
+} from "@/19/19"
 import { readFileSync } from "fs"
 import { resolve } from "path"
 
-const INPUT = String(readFileSync(resolve(__dirname, "19.input.txt"))).split("\n")
+const INPUT = String(readFileSync(resolve(__dirname, "19.input.txt")))
+    .split("\n")
+    .map(parseBluePrint)
 
-const mockBlueprint = () => ({
+const mockBlueprint1 = () => ({
     blueprintId: 1,
 
     oreRobotCostOre: 4,
@@ -18,140 +26,32 @@ const mockBlueprint = () => ({
     geodeRobotCostObsidian: 7,
 })
 
-describe("followBlueprint", () => {
-    it("should return the state after following the given blueprint for a number of minutes", () => {
-        expect(followBlueprint(1, mockBlueprint())).toEqual({
-            oreCount: 1,
-            oreRobotCount: 1,
+const mockBlueprint2 = () => ({
+    blueprintId: 2,
 
-            clayCount: 0,
-            clayRobotCount: 0,
+    oreRobotCostOre: 2,
 
-            obsidianCount: 0,
-            obsidianRobotCount: 0,
+    clayRobotCostOre: 3,
 
-            geodeCount: 0,
-            geodeRobotCount: 0,
-        })
+    obsidianRobotCostOre: 3,
+    obsidianRobotCostClay: 8,
 
-        expect(followBlueprint(2, mockBlueprint())).toEqual({
-            oreCount: 2,
-            oreRobotCount: 1,
+    geodeRobotCostOre: 3,
+    geodeRobotCostObsidian: 12,
+})
 
-            clayCount: 0,
-            clayRobotCount: 0,
+describe.skip("findMaxGeodeCount", () => {
+    it("should return the maximum amount of geodes that could be found within the time frame", () => {
+        expect(findMaxGeodeCount(24, mockBlueprint1())).toEqual(9)
 
-            obsidianCount: 0,
-            obsidianRobotCount: 0,
-
-            geodeCount: 0,
-            geodeRobotCount: 0,
-        })
-
-        expect(followBlueprint(3, mockBlueprint())).toEqual({
-            oreCount: 1,
-            oreRobotCount: 1,
-
-            clayCount: 0,
-            clayRobotCount: 1,
-
-            obsidianCount: 0,
-            obsidianRobotCount: 0,
-
-            geodeCount: 0,
-            geodeRobotCount: 0,
-        })
-
-        expect(followBlueprint(4, mockBlueprint())).toEqual({
-            oreCount: 2,
-            oreRobotCount: 1,
-
-            clayCount: 1,
-            clayRobotCount: 1,
-
-            obsidianCount: 0,
-            obsidianRobotCount: 0,
-
-            geodeCount: 0,
-            geodeRobotCount: 0,
-        })
-
-        expect(followBlueprint(5, mockBlueprint())).toEqual({
-            oreCount: 1,
-            oreRobotCount: 1,
-
-            clayCount: 2,
-            clayRobotCount: 2,
-
-            obsidianCount: 0,
-            obsidianRobotCount: 0,
-
-            geodeCount: 0,
-            geodeRobotCount: 0,
-        })
-
-        expect(followBlueprint(6, mockBlueprint())).toEqual({
-            oreCount: 2,
-            oreRobotCount: 1,
-
-            clayCount: 4,
-            clayRobotCount: 2,
-
-            obsidianCount: 0,
-            obsidianRobotCount: 0,
-
-            geodeCount: 0,
-            geodeRobotCount: 0,
-        })
-
-        expect(followBlueprint(7, mockBlueprint())).toEqual({
-            oreCount: 1,
-            oreRobotCount: 1,
-
-            clayCount: 6,
-            clayRobotCount: 3,
-
-            obsidianCount: 0,
-            obsidianRobotCount: 0,
-
-            geodeCount: 0,
-            geodeRobotCount: 0,
-        })
-
-        expect(followBlueprint(8, mockBlueprint())).toEqual({
-            oreCount: 2,
-            oreRobotCount: 1,
-
-            clayCount: 9,
-            clayRobotCount: 3,
-
-            obsidianCount: 0,
-            obsidianRobotCount: 0,
-
-            geodeCount: 0,
-            geodeRobotCount: 0,
-        })
-
-        // expect(followBlueprint(9, mockBlueprint())).toEqual({
-        //     oreCount: 3,
-        //     oreRobotCount: 1,
-
-        //     clayCount: 12,
-        //     clayRobotCount: 3,
-
-        //     obsidianCount: 0,
-        //     obsidianRobotCount: 0,
-
-        //     geodeCount: 0,
-        //     geodeRobotCount: 0,
-        // })
+        expect(findMaxGeodeCount(24, mockBlueprint2())).toEqual(12)
     })
 })
 
 describe("getNextPossibleStates", () => {
     it("should return all the next possible states after following the blueprint", () => {
         // minute 1
-        expect(getNextPossibleStates(makeInitialState(), mockBlueprint())).toEqual([
+        expect(getNextPossibleStates(makeInitialState(), mockBlueprint1())).toEqual([
             {
                 oreCount: 1,
                 oreRobotCount: 1,
@@ -183,7 +83,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -217,7 +117,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -264,7 +164,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -298,7 +198,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -345,7 +245,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -379,7 +279,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -426,7 +326,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -459,7 +359,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -506,7 +406,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -553,7 +453,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -626,7 +526,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -673,7 +573,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -707,7 +607,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -754,7 +654,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -814,7 +714,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -848,7 +748,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -895,7 +795,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 0,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -955,7 +855,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 0,
                     geodeRobotCount: 1,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -1002,7 +902,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 1,
                     geodeRobotCount: 1,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -1062,7 +962,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 2,
                     geodeRobotCount: 1,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -1148,7 +1048,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 3,
                     geodeRobotCount: 2,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -1208,7 +1108,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 5,
                     geodeRobotCount: 2,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -1281,7 +1181,7 @@ describe("getNextPossibleStates", () => {
                     geodeCount: 7,
                     geodeRobotCount: 2,
                 },
-                mockBlueprint()
+                mockBlueprint1()
             )
         ).toEqual([
             {
@@ -1377,5 +1277,25 @@ describe("parseBluePrint", () => {
             geodeRobotCostOre: 2,
             geodeRobotCostObsidian: 9,
         })
+    })
+})
+
+describe("sumBlueprintQualityLevels", () => {
+    it("should return the sum of the blueprint quality levels", () => {
+        expect(
+            sumBlueprintQualityLevels([
+                { blueprintId: 1, geodeCount: 9 },
+                { blueprintId: 2, geodeCount: 12 },
+            ])
+        ).toEqual(33)
+
+        // expect(
+        //     sumBlueprintQualityLevels(
+        //         INPUT.map((blueprint) => ({
+        //             blueprintId: blueprint.blueprintId,
+        //             geodeCount: findMaxGeodeCount(24, blueprint),
+        //         }))
+        //     )
+        // ).toEqual(0)
     })
 })

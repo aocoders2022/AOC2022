@@ -1,21 +1,17 @@
-export const followBlueprint = (minutes, blueprint) =>
-    Array.from(Array(minutes), (_, i) => i + 1).reduce((state) => {
-        const affordableClayRobotCount = Math.floor(state.oreCount / blueprint.clayRobotCostOre)
-        const canAffordClayRobot = affordableClayRobotCount > 0
+export const findMaxGeodeCount = (minutes, blueprint) => {
+    const possibleEndStates = Array.from(Array(minutes), (_, i) => i + 1).reduce(
+        (states) => {
+            return states.flatMap((state) => {
+                const nextPossibleStates = getNextPossibleStates(state, blueprint)
 
-        return {
-            ...state,
+                return nextPossibleStates
+            })
+        },
+        [makeInitialState()]
+    )
 
-            oreCount: canAffordClayRobot
-                ? state.oreCount + state.oreRobotCount - blueprint.clayRobotCostOre
-                : state.oreCount + state.oreRobotCount,
-
-            clayCount: state.clayCount + state.clayRobotCount,
-            clayRobotCount: canAffordClayRobot
-                ? state.clayRobotCount + affordableClayRobotCount
-                : state.clayRobotCount,
-        }
-    }, makeInitialState())
+    throw possibleEndStates.length
+}
 
 export const getNextPossibleStates = (state, blueprint) => {
     const makeNewState = (partialState) => ({ ...state, ...partialState })
@@ -179,3 +175,9 @@ export const parseBluePrint = (inputLine) => {
         geodeRobotCostObsidian: Number(geodeRobotCostObsidian),
     }
 }
+
+export const sumBlueprintQualityLevels = (analysisResults) =>
+    analysisResults.reduce(
+        (qualityLevel, { blueprintId, geodeCount }) => qualityLevel + blueprintId * geodeCount,
+        0
+    )
