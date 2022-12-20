@@ -1,49 +1,24 @@
-export const findMaxGeodeCount = (minutes, blueprint) => {
-    const cache = new Set()
-    let currentMaxGeode = 0
+export const findMaxGeodeCount = (minutes, blueprint, state = makeInitialState()) => {
+    if (minutes === 1) {
+        return Math.max(
+            0,
+            ...getNextPossibleStates(state, blueprint).map(
+                (nextPossibleState) => nextPossibleState.geodeCount
+            )
+        )
+    }
 
-    const possibleEndStates = Array.from(Array(minutes), (_, i) => i + 1).reduce(
-        (states) => {
-            return states.flatMap((state) => {
-                const nextPossibleStates = getNextPossibleStates(state, blueprint)
-
-                const confirmedNextPossibleStates = nextPossibleStates.filter(
-                    (nextPossibleState) => {
-                        // this is a bit of an assumption...
-                        // if (currentMaxGeode && nextPossibleState.geodeCount < currentMaxGeode) {
-                        //     return false
-                        // }
-
-                        return !cache.has(JSON.stringify(nextPossibleState))
-                    }
-                )
-
-                confirmedNextPossibleStates.forEach((nextPossibleState) => {
-                    cache.add(JSON.stringify(nextPossibleState))
-                })
-
-                const maxGeode = Math.max(
-                    ...confirmedNextPossibleStates.map(({ geodeCount }) => geodeCount)
-                )
-
-                if (maxGeode > currentMaxGeode) {
-                    currentMaxGeode = maxGeode
-                }
-
-                return confirmedNextPossibleStates
-            })
-        },
-        [makeInitialState()]
+    return Math.max(
+        0,
+        ...getNextPossibleStates(state, blueprint).map((nextPossibleState) =>
+            findMaxGeodeCount(minutes - 1, blueprint, nextPossibleState)
+        )
     )
-
-    throw possibleEndStates.length
-
-    return currentMaxGeode
 }
 
 export const getNextPossibleStates = (state, blueprint) => {
     const makeNewState = (partialState) => ({ ...state, ...partialState })
-    const nextPossibleStates = []
+    let nextPossibleStates = []
 
     // save everything
     nextPossibleStates.push(
@@ -138,6 +113,8 @@ export const getNextPossibleStates = (state, blueprint) => {
     const canAffordGeodeRobot = affordableGeodeRobotCount > 0
 
     if (canAffordGeodeRobot) {
+        nextPossibleStates = [] // I aim want to do this.
+
         nextPossibleStates.push(
             makeNewState({
                 oreCount:
