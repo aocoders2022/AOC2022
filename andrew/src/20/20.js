@@ -43,15 +43,20 @@ export const moveBackwards = (sequence, number) => {
         return newI
     }
 
-    const adjustedNewIndex = newIndex >= 0 ? newIndex : adjustIndex(newIndex, sequence)
+    const divisions = Math.floor(newIndex / sequence.length)
+    const adjustedNewIndex = newIndex >= 0 ? newIndex : adjustIndex(newIndex, sequence) + divisions
 
     const sequenceWithoutNumber = [...sequence.slice(0, index), ...sequence.slice(index + 1)]
 
     if (adjustedNewIndex !== newIndex) {
+        if (adjustedNewIndex === 0) {
+            return [number, ...sequenceWithoutNumber]
+        }
+
         return [
-            ...sequenceWithoutNumber.slice(0, adjustedNewIndex - 1),
+            ...sequenceWithoutNumber.slice(0, adjustedNewIndex),
             number,
-            ...sequenceWithoutNumber.slice(adjustedNewIndex - 1),
+            ...sequenceWithoutNumber.slice(adjustedNewIndex),
         ]
     }
 
@@ -69,15 +74,20 @@ export const moveBackwards = (sequence, number) => {
 export const moveForwards = (sequence, number) => {
     const index = sequence.indexOf(number)
     const newIndex = index + number
-    const adjustedNewIndex = newIndex % sequence.length
+    const divisions = Math.floor(newIndex / sequence.length)
+    const adjustedNewIndex = (newIndex % sequence.length) + divisions
 
     const sequenceWithoutNumber = [...sequence.slice(0, index), ...sequence.slice(index + 1)]
 
     if (adjustedNewIndex !== newIndex) {
+        if (adjustedNewIndex === sequence.length - 1) {
+            return [number, ...sequenceWithoutNumber]
+        }
+
         return [
-            ...sequenceWithoutNumber.slice(0, adjustedNewIndex + 1),
+            ...sequenceWithoutNumber.slice(0, adjustedNewIndex),
             number,
-            ...sequenceWithoutNumber.slice(adjustedNewIndex + 1),
+            ...sequenceWithoutNumber.slice(adjustedNewIndex),
         ]
     }
 
