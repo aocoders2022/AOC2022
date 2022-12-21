@@ -1,3 +1,5 @@
+export const applyDecryptionKey = (sequence) => sequence.map((number) => number * 811589153)
+
 export const getGroveCoordinates = (sequence) => {
     const getGroveCoordinateValue = (index) =>
         sequence[(sequence.indexOf(0) + index) % sequence.length]
@@ -9,10 +11,8 @@ export const getGroveCoordinates = (sequence) => {
     )
 }
 
-export const mixFile = (sequence) => {
-    const initialSequence = sequence.map((number) => new Number(number))
-
-    return initialSequence
+export const mixFile = (sequence, initialSequence = sequence.map((number) => new Number(number))) =>
+    initialSequence
         .reduce((newSequence, number) => {
             if (number === 0) {
                 return newSequence
@@ -29,6 +29,14 @@ export const mixFile = (sequence) => {
             return newSequence
         }, initialSequence)
         .map((number) => number + 0)
+
+export const mixFileTimes = (times, sequence) => {
+    const initialSequence = sequence.map((number) => new Number(number))
+
+    return Array.from(Array(times), (_, i) => i).reduce(
+        (newSequence) => mixFile(newSequence, initialSequence),
+        initialSequence
+    )
 }
 
 export const moveBackwards = (sequence, number) => {
