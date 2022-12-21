@@ -23,21 +23,15 @@ describe("applyDecryptionKey", () => {
 
 describe("getGroveCoordinates", () => {
     it("should return the grove coordinates", () => {
-        expect(getGroveCoordinates([1, 2, -3, 4, 0, 3, -2])).toEqual(3)
-
-        expect(getGroveCoordinates(mixFile([1, 2, -3, 3, -2, 0, 4]))).toEqual(3)
-
         expect(getGroveCoordinates(mixFileTimes(1, [1, 2, -3, 3, -2, 0, 4]))).toEqual(3)
 
-        expect(getGroveCoordinates(mixFile(INPUT))).toEqual(8372)
-
         expect(getGroveCoordinates(mixFileTimes(1, INPUT))).toEqual(8372)
-    })
-})
 
-describe("mixFile", () => {
-    it("should return the mixed file", () => {
-        expect(mixFile([1, 2, -3, 3, -2, 0, 4])).toEqual([1, 2, -3, 4, 0, 3, -2])
+        expect(
+            getGroveCoordinates([
+                0, -2434767459, 1623178306, 3246356612, -1623178306, 2434767459, 811589153,
+            ])
+        ).toEqual(1623178306)
     })
 })
 
@@ -45,12 +39,9 @@ describe("mixFileTimes", () => {
     it("should return the mixed file a number of times", () => {
         expect(mixFileTimes(1, [1, 2, -3, 3, -2, 0, 4])).toEqual([1, 2, -3, 4, 0, 3, -2])
 
-        // expect(
-        //     mixFileTimes(
-        //         10,
-        //         [811589153, 1623178306, -2434767459, 2434767459, -1623178306, 0, 3246356612]
-        //     )
-        // ).toEqual(0, -2434767459, 1623178306, 3246356612, -1623178306, 2434767459, 811589153)
+        // expect(mixFileTimes(1, applyDecryptionKey([1, 2, -3, 3, -2, 0, 4]))).toEqual([
+        //     0, -2434767459, 3246356612, -1623178306, 2434767459, 1623178306, 811589153,
+        // ])
     })
 })
 
@@ -89,6 +80,8 @@ describe("moveForwards", () => {
         expect(moveForwards([8, 2, -3, 0, 3, 4, 1, -2], 1)).toEqual([1, 8, 2, -3, 0, 3, 4, -2])
 
         expect(moveForwards([6, 0, 0, 0, 0, 0, 0], 6)).toEqual([6, 0, 0, 0, 0, 0, 0])
+
+        expect(moveForwards([0, 6, 0, 0, 0, 0, 0], 6)).toEqual([0, 6, 0, 0, 0, 0, 0])
 
         expect(moveForwards([12, 0, 0, 0, 0, 0, 0], 12)).toEqual([12, 0, 0, 0, 0, 0, 0])
 

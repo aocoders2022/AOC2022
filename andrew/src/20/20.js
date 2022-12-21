@@ -11,14 +11,15 @@ export const getGroveCoordinates = (sequence) => {
     )
 }
 
-export const mixFile = (sequence, initialSequence = sequence.map((number) => new Number(number))) =>
+const mixFile = (sequence, initialSequence = sequence.map((number) => new Number(number))) =>
     initialSequence
         .reduce((newSequence, number) => {
             if (number === 0) {
                 return newSequence
             }
 
-            if (number > 0) {
+            if (number >= 0) {
+                throw moveForwards(newSequence, number).map((a) => +a)
                 return moveForwards(newSequence, number)
             }
 
@@ -41,18 +42,12 @@ export const mixFileTimes = (times, sequence) => {
 
 export const moveBackwards = (sequence, number) => {
     const index = sequence.indexOf(number)
+
     const newIndex = index + number
 
-    const adjustIndex = (i, seq) => {
-        const newI = seq.length + i
-
-        if (newI < 0) return adjustIndex(newI, seq)
-
-        return newI
-    }
-
     const divisions = Math.floor(newIndex / sequence.length)
-    const adjustedNewIndex = newIndex >= 0 ? newIndex : adjustIndex(newIndex, sequence) + divisions
+    const adjustedNewIndex =
+        newIndex >= 0 ? newIndex : sequence.length + ((newIndex % sequence.length) + divisions)
 
     const sequenceWithoutNumber = [...sequence.slice(0, index), ...sequence.slice(index + 1)]
 
