@@ -13,32 +13,47 @@ export const mixFile = (sequence) => {
     const initialSequence = sequence.map((number) => new Number(number))
 
     return initialSequence
-        .reduce(
-            (newSequence, number, index) => {
-                if (number === 0) {
-                    return newSequence
-                }
-
-                if (number > 0) {
-                    return moveForwards(newSequence, number)
-                }
-
-                if (number < 0) {
-                    return moveBackwards(newSequence, number)
-                }
-
+        .reduce((newSequence, number) => {
+            if (number === 0) {
                 return newSequence
-            },
-            [...initialSequence]
-        )
+            }
+
+            if (number > 0) {
+                return moveForwards(newSequence, number)
+            }
+
+            if (number < 0) {
+                return moveBackwards(newSequence, number)
+            }
+
+            return newSequence
+        }, initialSequence)
         .map((number) => number + 0)
 }
 
-const jumpBack = (sequence, number) => {
+export const moveBackwards = (sequence, number) => {
     const index = sequence.indexOf(number)
-    const newIndex = index - 1
+    const newIndex = index + number
+
+    const adjustIndex = (i, seq) => {
+        const newI = seq.length + i
+
+        if (newI < 0) return adjustIndex(newI, seq)
+
+        return newI
+    }
+
+    const adjustedNewIndex = newIndex >= 0 ? newIndex : adjustIndex(newIndex, sequence)
 
     const sequenceWithoutNumber = [...sequence.slice(0, index), ...sequence.slice(index + 1)]
+
+    if (adjustedNewIndex !== newIndex) {
+        return [
+            ...sequenceWithoutNumber.slice(0, adjustedNewIndex - 1),
+            number,
+            ...sequenceWithoutNumber.slice(adjustedNewIndex - 1),
+        ]
+    }
 
     if (newIndex === 0) {
         return [...sequenceWithoutNumber, number]
@@ -51,14 +66,22 @@ const jumpBack = (sequence, number) => {
     ]
 }
 
-const jumpForward = (sequence, number) => {
+export const moveForwards = (sequence, number) => {
     const index = sequence.indexOf(number)
-    const newIndex = index + 1
+    const newIndex = index + number
+    const adjustedNewIndex = newIndex % sequence.length
 
     const sequenceWithoutNumber = [...sequence.slice(0, index), ...sequence.slice(index + 1)]
 
+    if (adjustedNewIndex !== newIndex) {
+        return [
+            ...sequenceWithoutNumber.slice(0, adjustedNewIndex + 1),
+            number,
+            ...sequenceWithoutNumber.slice(adjustedNewIndex + 1),
+        ]
+    }
+
     if (newIndex === sequence.length - 1) {
-        // this rule could be wrong
         return [number, ...sequenceWithoutNumber]
     }
 
@@ -68,15 +91,3 @@ const jumpForward = (sequence, number) => {
         ...sequenceWithoutNumber.slice(newIndex),
     ]
 }
-
-export const moveBackwards = (sequence, number) =>
-    Array.from(Array(Math.abs(number)), (_, i) => i).reduce(
-        (newSequence) => jumpBack(newSequence, number),
-        [...sequence]
-    )
-
-export const moveForwards = (sequence, number) =>
-    Array.from(Array(Math.abs(number)), (_, i) => i).reduce(
-        (newSequence) => jumpForward(newSequence, number),
-        [...sequence]
-    )
