@@ -11,96 +11,32 @@ export const getGroveCoordinates = (sequence) => {
     )
 }
 
-const mixFile = (sequence, initialSequence = sequence.map((number) => new Number(number))) =>
-    initialSequence
-        .reduce((newSequence, number) => {
+export const mixFileTimes = (times, sequence) => {
+    const initialSequence = sequence.map((number) => new Number(number))
+
+    const mixFile = (newSequence) => {
+        return initialSequence.reduce((newSequence, number) => {
             if (number === 0) {
                 return newSequence
             }
 
-            if (number >= 0) {
-                throw moveForwards(newSequence, number).map((a) => +a)
-                return moveForwards(newSequence, number)
-            }
+            const index = newSequence.indexOf(number)
+            const newIndex = index + number
+            const sequenceWithoutNumber = [
+                ...newSequence.slice(0, index),
+                ...newSequence.slice(index + 1),
+            ]
+            const adjustedNewIndex = newIndex % sequenceWithoutNumber.length
 
-            if (number < 0) {
-                return moveBackwards(newSequence, number)
-            }
+            return [
+                ...sequenceWithoutNumber.slice(0, adjustedNewIndex),
+                number,
+                ...sequenceWithoutNumber.slice(adjustedNewIndex),
+            ]
+        }, newSequence)
+    }
 
-            return newSequence
-        }, initialSequence)
+    return Array.from(Array(times), (_, i) => i)
+        .reduce(mixFile, initialSequence)
         .map((number) => number + 0)
-
-export const mixFileTimes = (times, sequence) => {
-    const initialSequence = sequence.map((number) => new Number(number))
-
-    return Array.from(Array(times), (_, i) => i).reduce(
-        (newSequence) => mixFile(newSequence, initialSequence),
-        initialSequence
-    )
-}
-
-export const moveBackwards = (sequence, number) => {
-    const index = sequence.indexOf(number)
-
-    const newIndex = index + number
-
-    const divisions = Math.floor(newIndex / sequence.length)
-    const adjustedNewIndex =
-        newIndex >= 0 ? newIndex : sequence.length + ((newIndex % sequence.length) + divisions)
-
-    const sequenceWithoutNumber = [...sequence.slice(0, index), ...sequence.slice(index + 1)]
-
-    if (adjustedNewIndex !== newIndex) {
-        if (adjustedNewIndex === 0) {
-            return [number, ...sequenceWithoutNumber]
-        }
-
-        return [
-            ...sequenceWithoutNumber.slice(0, adjustedNewIndex),
-            number,
-            ...sequenceWithoutNumber.slice(adjustedNewIndex),
-        ]
-    }
-
-    if (newIndex === 0) {
-        return [...sequenceWithoutNumber, number]
-    }
-
-    return [
-        ...sequenceWithoutNumber.slice(0, newIndex),
-        number,
-        ...sequenceWithoutNumber.slice(newIndex),
-    ]
-}
-
-export const moveForwards = (sequence, number) => {
-    const index = sequence.indexOf(number)
-    const newIndex = index + number
-    const divisions = Math.floor(newIndex / sequence.length)
-    const adjustedNewIndex = (newIndex % sequence.length) + divisions
-
-    const sequenceWithoutNumber = [...sequence.slice(0, index), ...sequence.slice(index + 1)]
-
-    if (adjustedNewIndex !== newIndex) {
-        if (adjustedNewIndex === sequence.length - 1) {
-            return [number, ...sequenceWithoutNumber]
-        }
-
-        return [
-            ...sequenceWithoutNumber.slice(0, adjustedNewIndex),
-            number,
-            ...sequenceWithoutNumber.slice(adjustedNewIndex),
-        ]
-    }
-
-    if (newIndex === sequence.length - 1) {
-        return [number, ...sequenceWithoutNumber]
-    }
-
-    return [
-        ...sequenceWithoutNumber.slice(0, newIndex),
-        number,
-        ...sequenceWithoutNumber.slice(newIndex),
-    ]
 }
