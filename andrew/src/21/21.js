@@ -59,6 +59,51 @@ const getRootValue2 = (obj) => {
     return object.humn
 }
 
+const getRootValue3 = (obj) => {
+    Object.entries(obj).forEach(([monkey, job]) => {
+        if (monkey === "root") {
+            obj.root = job.replace(" + ", " === ")
+        }
+    })
+
+    let canStillReduce = true
+    let equation = obj.root
+
+    while (canStillReduce) {
+        Object.entries(obj).forEach(([monkey, job]) => {
+            if (monkey !== "humn") {
+                equation = equation.replace(monkey, `(${job})`)
+            }
+        })
+
+        try {
+            let equation2 = equation.replace("humn", 0)
+            typeof eval(equation2) === "boolean"
+            canStillReduce = false
+        } catch (e) {}
+    }
+
+    let canStillLoop = true
+    let counter = 1
+
+    const [left, right] = equation.split(" === ")
+
+    // console.warn(eval(right))
+    // console.warn(left)
+
+    while (canStillLoop) {
+        let humn = counter
+
+        if (eval(equation) === true) {
+            break
+        }
+
+        counter = counter + 1
+    }
+
+    return counter
+}
+
 const parseInput = (input) =>
     Object.fromEntries(
         input
@@ -112,11 +157,22 @@ const parseInput = (input) =>
             })
     )
 
+const parseInput2 = (input) =>
+    Object.fromEntries(
+        input
+            .split("\n")
+            .map((line) => line.split(": "))
+            .map(([monkey, job]) => [monkey, !isNaN(Number(job)) ? Number(job) : job])
+    )
+
 const EXAMPLE = parseInput(String(readFileSync(resolve(__dirname, "21.example.txt"))))
+const EXAMPLE2 = parseInput2(String(readFileSync(resolve(__dirname, "21.example.txt"))))
 const INPUT = parseInput(String(readFileSync(resolve(__dirname, "21.input.txt"))))
+const INPUT2 = parseInput2(String(readFileSync(resolve(__dirname, "21.input.txt"))))
 
 console.warn(getRootValue(EXAMPLE), getRootValue(EXAMPLE) === 152)
 console.warn(getRootValue(INPUT), getRootValue(INPUT) === 21120928600114)
 
 console.warn(getRootValue2(EXAMPLE), getRootValue2(EXAMPLE) === 301)
-// console.warn(getRootValue2(INPUT))
+// console.warn(getRootValue3(EXAMPLE2), getRootValue3(EXAMPLE2) === 301)
+console.warn(getRootValue3(INPUT2))
